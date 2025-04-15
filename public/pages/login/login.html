@@ -1,0 +1,40 @@
+<div class="form-container">
+    <div class="form-card">
+        <!-- Login Form -->
+        <div class="login-container">
+            <h1 class="login-title">Login</h1>
+            <form class="login-form" action="/loginSent" method="POST" onsubmit="return validateInputs('login')">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username:</label>
+                    <input type="text" id="username" name="username" required class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" id="password" name="password" required class="form-input">
+                </div>
+                <button type="submit" class="login-button">Login</button>
+                <button type="button" class="login-button" onclick="flipCard()">Signup</button>
+            </form>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="signup-container">
+            <h1 class="login-title">Signup</h1>
+            <form class="signup-form" action="/signup" method="POST" onsubmit="return validateInputs('signup')">
+                <div class="form-group">
+                    <label for="new-username" class="form-label">Username:</label>
+                    <input type="text" id="new-username" name="username" required class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="new-password" class="form-label">Password:</label>
+                    <input type="password" id="new-password" name="password" required class="form-input">
+                </div>
+                <button type="submit" class="login-button">Signup</button>
+                <button type="button" class="login-button" onclick="flipCard()">Back to Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="./../../pages/compentens/asset/js/login_signup.js"></script>

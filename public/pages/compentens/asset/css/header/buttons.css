@@ -1,0 +1,12 @@
+nav button {
+    background-color: #38a169; /* Tailwind's bg-green-600 */
+    color: white;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s;
+}
+
+nav button:hover {
+    background-color: #48bb78; /* Tailwind's hover:bg-green-500 */
+}
