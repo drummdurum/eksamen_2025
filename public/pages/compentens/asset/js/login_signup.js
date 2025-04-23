@@ -4,7 +4,7 @@ const container = document.querySelector('.form-container');
 container.classList.toggle('flipped');
 }
 $(document).ready(function() {
-    toastr.success('Hej! Dette er en succesbesked.');
+    toastr.success('Du skal være logget på, visse steder på siden!');
   });
   
   function validateInputs(formType){
@@ -60,6 +60,7 @@ $(document).ready(function() {
             .then((data) => {
                 if (data.message === 'Login successful! Welcome, Admin!' || data.message === 'Login successful! Welcome, User!') {
                     toastr.success(data.message);
+                    window.location.href = '/'; 
                 } else {
                     toastr.error(data.message); // Fejl fra backend
                 }

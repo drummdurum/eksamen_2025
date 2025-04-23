@@ -6,5 +6,8 @@ export const frontpage = contructPage(frontpagepage, {title: 'Find a bar!'});
 const loginPagePage = readPage('./public/pages/login/login.html');
 export const loginPage = contructPage(loginPagePage, {title: 'Login'});
 
+const adminpageNyBarPage = readPage('./public/pages/addBar/newBar.html');
+export const adminpageNyBar = contructPage(adminpageNyBarPage, {title: 'Admin - Ny Bar'});
+
 
 

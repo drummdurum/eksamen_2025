@@ -1,15 +1,21 @@
 import express from 'express';
+import sessionMiddleware from './serverSSR/session.js';
 const app = express();
 
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-import pagesRouter from './routes/pagesRoutes.js';
+// Middleware til session-håndtering
+app.use(sessionMiddleware);
+
+import pagesRouter from './serverAPI/routes/pagesRoutes.js';
 app.use(pagesRouter);
 
-import authRouter from './routes/authRoutes.js';
+import authRouter from './serverAPI/routes/authRoutes.js';
 app.use(authRouter);
+
+
 
 const PORT = 8080;
 app.listen(PORT, () => {
