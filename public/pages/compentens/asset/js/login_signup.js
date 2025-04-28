@@ -3,9 +3,12 @@ function flipCard() {
 const container = document.querySelector('.form-container');
 container.classList.toggle('flipped');
 }
-$(document).ready(function() {
-    toastr.success('Du skal være logget på, visse steder på siden!');
-  });
+$(document).ready(function () {
+    const messageElement = document.getElementById('message');
+    if (messageElement && messageElement.textContent.trim()) {
+        toastr.error(messageElement.textContent.trim());
+    }
+});
   
   function validateInputs(formType){
     let username, password;
@@ -39,7 +42,7 @@ $(document).ready(function() {
     }
 
     // Ekstra validering for signup (f.eks. stærkt password)
-    if (formType === 'signup') {
+    /*if (formType === 'signup') {
         const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{4,}$/;
         if (!passwordRegex.test(password)) {
             toastr.error(
@@ -49,6 +52,7 @@ $(document).ready(function() {
             return false; // Stop formularen fra at blive indsendt
         }
     }
+        */
 
     if (formType === 'login') {
         fetch('/loginSent', {
@@ -72,8 +76,6 @@ $(document).ready(function() {
 
         return false; // Stop formularen fra at blive indsendt
     }
-
-    toastr.success('Inputs are valid!');
     return true; // Tillad formularen at blive indsendt
 
 }

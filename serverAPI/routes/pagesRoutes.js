@@ -11,20 +11,23 @@ router.get('/', async (req, res) => {
 });
 
 import {loginPage} from '../../util/pages.js';
-
 router.get('/login', async (req, res) => {
-  res.send(loginPage);
+  const message = req.session?.message || null; // Hent beskeden fra sessionen, hvis den findes
+  req.session.message = null; // Ryd beskeden efter brug
+  res.send(loginPage.replace('{{message}}', message || '')); // Indsæt beskeden i HTML'en
 });
 
 import {adminpageNyBar} from '../../util/pages.js';
 
-router.get('/adminpageNewBar', adminMiddleware, async (req, res) => {
+router.get('/addBar', adminMiddleware, async (req, res) => {
   res.send(adminpageNyBar);
 });
 
-router.get('/dashboard', authMiddleware, (req, res) => {
-  res.send(`Velkommen til dashboardet, ${req.session.user.username}`);
+import {allBars} from '../../util/pages.js';
+router.get('/allBar', authMiddleware, async (req, res) => {
+  res.send(allBars);
 });
+
 
 
 export default router;
