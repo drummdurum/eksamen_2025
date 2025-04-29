@@ -1,11 +1,13 @@
+import 'dotenv/config';
 const nodemailer = require('nodemailer');
+
 
 async function sendMail() {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
             user: 'sedrumm@gmail.com',
-            pass: 'lzfa sepz infy lafa' // Brug app-koden her
+            pass: process.env.GmailserviceAppKode, // Brug app-koden her
         }
     });
 
