@@ -17,13 +17,15 @@
                 </div>
                 <button type="submit" class="login-button">Login</button>
                 <button type="button" class="login-button" onclick="flipCard()">Signup</button>
+                <div class="login-button"><a href="/forgottenKode">Glemt adgangskode?</a></div>
+                
             </form>
         </div>
 
         <!-- Signup Form -->
         <div class="signup-container">
             <h1 class="login-title">Signup</h1>
-            <form class="signup-form" action="/signup" method="POST" onsubmit="return validateInputs('signup')">
+            <form class="signup-form" onsubmit="return validateInputs('signup')" action="/signup" method="POST" >
                 <div class="form-group">
                     <label for="new-username" class="form-label">Username:</label>
                     <input type="text" id="new-username" name="username" required class="form-input">
@@ -45,5 +47,3 @@
 
 
 <script src="./../../pages/compentens/asset/js/login_signup.js"></script>
-<script src="./../../pages/compentens/asset/js/fechtSignup.js"></script>
-

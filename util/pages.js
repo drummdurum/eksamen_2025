@@ -12,4 +12,6 @@ export const adminpageNyBar = contructPage(adminpageNyBarPage, {title: 'Admin - 
 const allBarsPage = readPage('./public/pages/allBar/allBar.html');
 export const allBars = contructPage(allBarsPage, {title: 'All Bars'});
 
+const forgottenKodesPage = readPage('./public/pages/forgottenKode/forgottenKode.html');
+export const forgottenKodes = contructPage(forgottenKodesPage, {title: 'Glemt kode'});
 

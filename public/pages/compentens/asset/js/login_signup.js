@@ -9,51 +9,25 @@ $(document).ready(function () {
         toastr.error(messageElement.textContent.trim());
     }
 });
-  
   function validateInputs(formType){
     let username, password;
     
     if(formType === 'login'){
         username = document.getElementById('username').value.trim();
         password = document.getElementById('password').value.trim();
-    } else if(formType === 'signup'){
-        username = document.getElementById('username').value.trim();
-        password = document.getElementById('password').value.trim();
+    } 
+
+     if (formType === 'login' && (!username || username.length < 3)) {
+        toastr.error('login: brugernavn er ikke rigtigt!');
+        return false; 
     }
 
-     if (!username || username.length < 3) {
-        toastr.error(
-            formType === 'login'
-                ? 'login: brugernavn er ikke rigtigt!'
-                : 'Signup: Brugernavn skal være mindst 3 tegn!'
-        );
-        console.log('Brugernavn er for kort!');
-        return false; // Stop formularen fra at blive indsendt
+    if (!password && formType === 'login') {
+        toastr.error('Login: Password er påkrævet!');
+        return false; 
     }
 
-    // Validering for password
-    if (!password) {
-        toastr.error(
-            formType === 'login'
-                ? 'Login: Password er påkrævet!'
-                : 'Signup: Password er påkrævet!'
-        );
-        return false; // Stop formularen fra at blive indsendt
-    }
-
-    // Ekstra validering for signup (f.eks. stærkt password)
-    /*if (formType === 'signup') {
-        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{4,}$/;
-        if (!passwordRegex.test(password)) {
-            toastr.error(
-                'Signup: Password skal være mindst 4 tegn langt og indeholde store bogstaver, små bogstaver, tal og specialtegn!'
-            );
-            console.log('Password opfylder ikke kravene!');
-            return false; // Stop formularen fra at blive indsendt
-        }
-    }
-        */
-
+        
     if (formType === 'login') {
         fetch('/loginSent', {
             method: 'POST',
@@ -66,7 +40,7 @@ $(document).ready(function () {
                     toastr.success(data.message);
                     window.location.href = '/'; 
                 } else {
-                    toastr.error(data.message); // Fejl fra backend
+                    toastr.error(data.message); 
                 }
             })
             .catch((error) => {
@@ -74,8 +48,67 @@ $(document).ready(function () {
                 toastr.error('Noget gik galt. Prøv igen senere.');
             });
 
-        return false; // Stop formularen fra at blive indsendt
+        return false; 
     }
-    return true; // Tillad formularen at blive indsendt
+    return true; 
 
+    
 }
+
+document.querySelector('.signup-form').addEventListener('submit', async function (event) {
+    event.preventDefault(); // Forhindrer standardformularindsendelse
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+  
+    if (!data.username || data.username.length < 3) {
+        toastr.error('Signup: Brugernavn skal være mindst 3 tegn!');
+        return;
+    }
+
+    if (!data.password || data.password.length < 4) {
+        toastr.error('Signup: Password skal være mindst 4 tegn langt!');
+        return;
+    }
+
+    if (!/[A-Z]/.test(data.password)) {
+        toastr.error('Signup: Password skal indeholde mindst ét stort bogstav!');
+        return;
+    }
+
+    if (!/[0-9]/.test(data.password)) {
+        toastr.error('Signup: Password skal indeholde mindst ét tal!');
+        return;
+    }
+
+    if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+        toastr.error('Signup: Indtast en gyldig e-mailadresse!');
+        return;
+    }
+
+    try {
+        const response = await fetch('/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            toastr.success(result.message);
+
+
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000); 
+        } else {
+            
+            toastr.error(result.message);
+        }
+    } catch (error) {
+        console.error('Fejl under oprettelse af bruger:', error);
+        toastr.error('Noget gik galt. Prøv igen senere.');
+    }
+});

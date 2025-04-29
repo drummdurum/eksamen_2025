@@ -28,6 +28,9 @@ router.get('/allBar', authMiddleware, async (req, res) => {
   res.send(allBars);
 });
 
-
+import {forgottenKodes} from '../../util/pages.js';
+router.get('/forgottenKode', async (req, res) => {
+  res.send(forgottenKodes);
+});
 
 export default router;
