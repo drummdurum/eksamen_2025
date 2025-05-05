@@ -10,6 +10,16 @@ await db.exec(`
   );
 `);
 
+await db.exec(`
+  CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    token TEXT NOT NULL,
+    expires_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+  );
+`);
+
 // Indsæt standardbrugere
 const testUsers = [
     { username: 'testuser', password: '$2b$10$0oRTvyhXyVtzLj/FqZ9mFuxJEgMncSE4NKsepSObCe3.DEQbuDgUi', isAdmin: 0 },

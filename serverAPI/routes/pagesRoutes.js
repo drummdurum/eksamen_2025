@@ -33,4 +33,9 @@ router.get('/forgottenKode', async (req, res) => {
   res.send(forgottenKodes);
 });
 
+import {resetPass} from '../../util/pages.js';
+router.get('/reset-password', async (req, res) =>{
+  res.send(resetPass)
+});
+
 export default router;

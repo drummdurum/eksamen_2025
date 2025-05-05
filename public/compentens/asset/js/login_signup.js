@@ -3,12 +3,21 @@ function flipCard() {
 const container = document.querySelector('.form-container');
 container.classList.toggle('flipped');
 }
+
+const urlParams = new URLSearchParams(window.location.search);
+const message = urlParams.get('message');
+
+if (message) {
+    toastr.success(decodeURIComponent(message)); 
+}
+
 $(document).ready(function () {
     const messageElement = document.getElementById('message');
     if (messageElement && messageElement.textContent.trim()) {
         toastr.error(messageElement.textContent.trim());
     }
 });
+
   function validateInputs(formType){
     let username, password;
     
@@ -17,6 +26,11 @@ $(document).ready(function () {
         password = document.getElementById('password').value.trim();
     } 
 
+    const forbiddenChars = /[-'']/;
+    if(forbiddenChars.test(username)){
+        toastr.error('login: User name, må ikke indholde - eller enkelt anførselstegn!' )
+        return;
+    }
      if (formType === 'login' && (!username || username.length < 3)) {
         toastr.error('login: brugernavn er ikke rigtigt!');
         return false; 
@@ -56,7 +70,7 @@ $(document).ready(function () {
 }
 
 document.querySelector('.signup-form').addEventListener('submit', async function (event) {
-    event.preventDefault(); // Forhindrer standardformularindsendelse
+    event.preventDefault(); 
 
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
@@ -64,6 +78,11 @@ document.querySelector('.signup-form').addEventListener('submit', async function
   
     if (!data.username || data.username.length < 3) {
         toastr.error('Signup: Brugernavn skal være mindst 3 tegn!');
+        return;
+    }
+    const forbiddenChars = /[-'']/;
+    if(forbiddenChars.test(data.username)){
+        toastr.error('signup:User name, må ikke indholde - eller enkelt anførselstegn!' )
         return;
     }
 

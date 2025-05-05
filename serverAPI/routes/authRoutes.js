@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { compare } from 'bcrypt';
 import bcrypt from 'bcryptjs';
-import db from './../../database/connection.js'; // Importer databaseforbindelsen
+import db from './../../database/connection.js'; 
 
 const router = Router();
 
@@ -9,23 +9,23 @@ router.post('/loginSent', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        // Find brugeren i databasen
+    
         const user = await db.get(`
             SELECT * FROM users WHERE name = ?
         `, [username]);
 
         if (user) {
-            // Sammenlign den indtastede adgangskode med den hashed adgangskode
+           
             const isPasswordValid = await compare(password, user.password);
 
             if (isPasswordValid) {
-                // Gem brugerdata i sessionen
+              
                 req.session.user = {
                     username: user.name,
                     isAdmin: user.isAdmin,
                 };
 
-                // Hvis adgangskoden er korrekt
+               
                 if (user.isAdmin) {
                     res.status(200).send({
                         message: 'Login successful! Welcome, Admin!',
@@ -38,11 +38,11 @@ router.post('/loginSent', async (req, res) => {
                     });
                 }
             } else {
-                // Hvis adgangskoden er forkert
+                
                 res.status(401).send({ message: 'Unauthorized: Invalid credentials! forkert kdoe' });
             }
         } else {
-            // Hvis brugeren ikke findes
+            
             res.status(401).send({ message: 'Unauthorized: Invalid credentials! du findes ikke' });
         }
     } catch (error) {
@@ -66,27 +66,35 @@ router.post('/signup', async (req, res) => {
     const { username, password, email } = req.body;
 
     try {
-        // Tjek om brugernavnet allerede findes
+        
         const existingUser = await db.get(`
             SELECT * FROM users WHERE name = ?
         `, [username]);
 
+        const existingEmail = await db.get(`
+            SELECT * FROM users WHERE email = ?
+        `, [email]);
+
+        if(existingEmail){
+            return res.status(400).send({message: 'Email bliver allerede brugt'})
+        }
+
         if (existingUser) {
             return res.status(400).send({ message: 'Brugernavnet er allerede taget' });
         }
-       // Hash adgangskoden
+       
        const saltRounds = 10;
-       const hashedPassword = bcrypt.hashSync(password, saltRounds); // 10 er salt-rundeniveauet
+       const hashedPassword = bcrypt.hashSync(password, saltRounds); 
 
-       // Opret en ny bruger i databasen
+      
        await db.run(`
            INSERT INTO users (name, email, password, isAdmin)
            VALUES (?, ?, ?, ?)
-       `, [username, email, hashedPassword, 0]); // isAdmin er sat til 0 som standard
+       `, [username, email, hashedPassword, 0]);
         
        req.session.user = {
         username: username,
-        isAdmin: 0, // Nyoprettede brugere er ikke admin som standard
+        isAdmin: 0, 
     };
        res.status(201).send({ message: 'Du er nu oprettet og bliver sendt til forsiden' });
         

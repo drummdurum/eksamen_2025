@@ -15,3 +15,6 @@ export const allBars = contructPage(allBarsPage, {title: 'All Bars'});
 const forgottenKodesPage = readPage('./public/pages/forgottenKode/forgottenKode.html');
 export const forgottenKodes = contructPage(forgottenKodesPage, {title: 'Glemt kode'});
 
+const resetPassPage = readPage('./public/pages/forgottenKode/resetPass.html')
+export const resetPass = contructPage(resetPassPage, {title: 'Resset adgangkode'});
+

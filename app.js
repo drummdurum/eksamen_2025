@@ -15,6 +15,9 @@ app.use(pagesRouter);
 import authRouter from './serverAPI/routes/authRoutes.js';
 app.use(authRouter);
 
+import mailRouters from './serverAPI/routes/mailRoutes.js'
+app.use(mailRouters)
+
 
 
 const PORT = 8080;

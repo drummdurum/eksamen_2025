@@ -1,9 +1,11 @@
 
+<div id="message" class="hidden"></div>
+
 <div class="form-container">
     <div class="form-card">
         <div class="login-container">
             <h1 class="login-title">Glemt adgangskode</h1>
-            <form class="login-form" action="/loginSent" method="POST" >
+            <form class="login-form" >
                 <div class="form-group">
                     <label for="email" class="form-label">Skriv din email, så sender vi et link!</label>
                     <input type="text" id="email" name="email" required class="form-input">
@@ -13,3 +15,5 @@
         </div>
     </div>
 </div>
+
+<script src="./../../pages/forgottenKode/fechtSendMailNewpass.js"></script>
