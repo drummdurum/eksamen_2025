@@ -2,7 +2,7 @@ import 'dotenv/config';
 import nodemailer from 'nodemailer';
 
 
-async function sendMail(email, subject, text) {
+export async function sendMail(email, subject, text) {
     console.log('GmailserviceAppKode:', process.env.GmailserviceAppKode);
     let transporter = nodemailer.createTransport({
         service: 'gmail',

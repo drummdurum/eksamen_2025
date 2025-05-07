@@ -8,3 +8,5 @@ export default function authMiddleware(req, res, next) {
       res.redirect('/login');
     }
   }
+
+  

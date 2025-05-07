@@ -38,4 +38,9 @@ router.get('/reset-password', async (req, res) =>{
   res.send(resetPass)
 });
 
+import {profile} from '../../util/pages.js';
+router.get('/profile', authMiddleware, async (req, res) => {
+  res.send(profile); 
+});
+
 export default router;

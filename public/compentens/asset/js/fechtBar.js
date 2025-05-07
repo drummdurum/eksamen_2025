@@ -1,41 +1,48 @@
-// Funktion til at hente data og generere firkanter
-function fetchAndGenerateBars() {
-    fetch('../pages/compentens/asset/DB/data.json') // Korrekt sti til JSON-filen
-        .then(response => response.json())
-        .then(data => {
-            const bars = data.results.map(bar => ({
-                name: bar.name,
-                address: bar.vicinity || bar.formatted_address, // Håndterer hvis vicinity er undefined
-                rating: bar.rating,
-                userRatings: bar.user_ratings_total,
-                types: (bar.types || []).filter(type => type !== 'point_of_interest' && type !== 'establishment')
-            }));
-            generateBars(bars); // Kald funktionen med de hentede data
-        })
-        .catch(error => console.error('Fejl ved hentning af data:', error));
+import fs from 'fs/promises';
+import path from 'path';
+
+import { fileURLToPath } from 'url';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+function saveBarToDatabase(bar) {
+    fetch('http://localhost:8080/bars', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bar)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Fejl ved gemning af bar i databasen');
+        }
+        console.log('Bar gemt i databasen:', bar.name);
+    })
+    .catch(error => console.error(error));
 }
 
-// Funktion til at generere firkanter
-function generateBars(bars) {
-    const container = document.querySelector('.border'); // Vælg containeren i din HTML
+async function fetchAndGenerateBars() {
+    try {
+        
+        const filePath = path.resolve(__dirname, '../DB/data.json');
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const data = JSON.parse(fileContent);
 
-    bars.forEach(bar => {
-        // Opret en div for hver bar
-        const barDiv = document.createElement('div');
-        barDiv.className = 'bar rounded-lg p-2 mb-2 w-1/4';
+        const bars = data.results.map(bar => ({
+            name: bar.name,
+            vicinity: bar.vicinity || bar.formatted_address, // Brug "vicinity"
+            rating: bar.rating,
+            user_ratings_total: bar.user_ratings_total,
+            types: (bar.types || []).filter(type => type !== 'point_of_interest' && type !== 'establishment')
+        }));
 
-        // Tilføj indhold til div'en
-        barDiv.innerHTML = `
-            <h3 class="font-bold">${bar.name}</h3>
-            <p>${bar.address}</p>
-            <p>Vurdering: ${bar.rating}</p>
-            <p>Typer: ${bar.types.join(', ')}</p>
-        `;
-
-        // Tilføj div'en til containeren
-        container.appendChild(barDiv);
-    });
+        bars.forEach(bar => saveBarToDatabase(bar));
+    } catch (error) {
+        console.error('Fejl ved hentning af data:', error);
+    }
 }
 
-// Kald funktionen til at hente data og generere firkanter
 fetchAndGenerateBars();

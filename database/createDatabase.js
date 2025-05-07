@@ -34,3 +34,4 @@ for (const user of testUsers) {
         VALUES (?, ?, ?, ?)
     `, [user.username, `${user.username}@example.com`, user.password, user.isAdmin]);
 }
+

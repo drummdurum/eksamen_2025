@@ -6,7 +6,6 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Middleware til session-håndtering
 app.use(sessionMiddleware);
 
 import pagesRouter from './serverAPI/routes/pagesRoutes.js';
@@ -18,6 +17,11 @@ app.use(authRouter);
 import mailRouters from './serverAPI/routes/mailRoutes.js'
 app.use(mailRouters)
 
+import usersRouter from './serverAPI/routes/usersRoutes.js';
+app.use(usersRouter);
+
+import barsRouter from './serverAPI/routes/barsRoutes.js';
+app.use(barsRouter);
 
 
 const PORT = 8080;

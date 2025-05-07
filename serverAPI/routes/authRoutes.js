@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { compare } from 'bcrypt';
 import bcrypt from 'bcryptjs';
 import db from './../../database/connection.js'; 
+import {sendMail} from './../../util/mailService/sendMail.js';
 
 const router = Router();
 
@@ -23,6 +24,7 @@ router.post('/loginSent', async (req, res) => {
                 req.session.user = {
                     username: user.name,
                     isAdmin: user.isAdmin,
+                    userId: user.id,
                 };
 
                
@@ -32,10 +34,12 @@ router.post('/loginSent', async (req, res) => {
                         isAdmin: true,
                     });
                 } else {
+                   
                     res.status(200).send({
                         message: 'Login successful! Welcome, User!',
                         isAdmin: false,
                     });
+                    
                 }
             } else {
                 
@@ -97,6 +101,7 @@ router.post('/signup', async (req, res) => {
         isAdmin: 0, 
     };
        res.status(201).send({ message: 'Du er nu oprettet og bliver sendt til forsiden' });
+       sendMail(email, 'Velkommen til BarToBar', 'Tak fordi du tilmeldte dig BarToBar! Vi glæder os til at have dig med.');
         
     } catch (error) {
         console.error('Fejl under oprettelse af bruger:', error);
