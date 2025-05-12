@@ -1,6 +1,6 @@
 async function fetchBars() {
     try {
-        const response = await fetch('http://localhost:8080/bars'); 
+        const response = await fetch('/bars'); 
         if (!response.ok) {
             throw new Error('Fejl ved hentning af barer');
         }
