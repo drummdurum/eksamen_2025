@@ -21,3 +21,6 @@ export const resetPass = contructPage(resetPassPage, {title: 'Resset adgangkode'
 const profilePage = readPage('./public/pages/profilside/profil.html')
 export const profile = contructPage(profilePage, {title: 'Profil'});
 
+const barInfopage = readPage('./public/pages/barInfo/barInfo.html')
+export const barInfo = contructPage(barInfopage, {title: 'Bar Info'});
+

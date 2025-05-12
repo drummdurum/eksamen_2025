@@ -24,7 +24,7 @@ router.get('/addBar', adminMiddleware, async (req, res) => {
 });
 
 import {allBars} from '../../util/pages.js';
-router.get('/allBar', authMiddleware, async (req, res) => {
+router.get('/allBar', async (req, res) => {
   res.send(allBars);
 });
 
@@ -43,4 +43,8 @@ router.get('/profile', authMiddleware, async (req, res) => {
   res.send(profile); 
 });
 
+import {barInfo} from '../../util/pages.js';
+router.get('/barInfo', async (req, res) => {
+  res.send(barInfo); 
+});
 export default router;

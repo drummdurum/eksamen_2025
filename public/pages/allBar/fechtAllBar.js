@@ -12,7 +12,7 @@ async function fetchBars() {
     
         bars.forEach(bar => {
             const barCard = document.createElement('div');
-            barCard.className = 'bar-card';
+            barCard.className = 'rounded-lg p-4 m-4 w-72 shadow hover:shadow-lg transition';
 
             barCard.innerHTML = `
                 <h3>${bar.name}</h3>
@@ -20,6 +20,8 @@ async function fetchBars() {
                 <p><strong>Rating:</strong> ${bar.rating || 'Ingen rating'}</p>
                 <p><strong>Antal anmeldelser:</strong> ${bar.user_ratings_total || 'Ingen anmeldelser'}</p>
                 <p><strong>Typer:</strong> ${bar.types.join(', ')}</p>
+                <div class="flex justify-between mt-2 space-x-2">    
+                </div>
             `;
 
             barContainer.appendChild(barCard);
