@@ -18,7 +18,7 @@ export const forgottenKodes = contructPage(forgottenKodesPage, {title: 'Glemt ko
 const resetPassPage = readPage('./public/pages/forgottenKode/resetPass.html')
 export const resetPass = contructPage(resetPassPage, {title: 'Resset adgangkode'});
 
-const profilePage = readPage('./public/pages/profilside/profil.html')
+const profilePage = readPage('./public/pages/profilSide/profil.html')
 export const profile = contructPage(profilePage, {title: 'Profil'});
 
 const barInfopage = readPage('./public/pages/barInfo/barInfo.html')
