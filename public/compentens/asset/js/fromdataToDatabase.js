@@ -8,11 +8,13 @@ for (const bar of bars) {
     const rating = bar.rating;
     const user_ratings_total = bar.user_ratings_total;
     const vicinity = bar.vicinity || bar.formatted_address;
+    const photo_reference = bar.photos && bar.photos[0] ? bar.photos[0].photo_reference : null;
+    const place_id = bar.place_id;
 
     const result = await db.run(`
-        INSERT INTO bars (name, rating, user_ratings_total, vicinity)
-        VALUES (?, ?, ?, ?)
-    `, [name, rating, user_ratings_total, vicinity]);
+        INSERT INTO bars (name, rating, user_ratings_total, vicinity, place_id, photo_reference)
+        VALUES (?, ?, ?, ?,?, ?)
+    `, [name, rating, user_ratings_total, vicinity, place_id, photo_reference]);
 
     const barId = result.lastID;
 

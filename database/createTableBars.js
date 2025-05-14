@@ -1,17 +1,19 @@
 import db from './../database/connection.js';
 
-// DROP TABLE IF EXISTS bars;
-  //   DROP TABLE IF EXISTS bar_types;
-
+ 
 await db.exec(`
-    
+    DROP TABLE IF EXISTS bars;
+    DROP TABLE IF EXISTS bar_types;
+
 
     CREATE TABLE IF NOT EXISTS bars (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         rating REAL,
         user_ratings_total INTEGER,
-        vicinity TEXT
+        vicinity TEXT,
+        photo_reference TEXT,
+        place_id TEXT
     );
     
     CREATE TABLE IF NOT EXISTS bar_types (

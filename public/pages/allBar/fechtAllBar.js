@@ -1,4 +1,4 @@
-async function fetchBars() {
+export async function fetchBars() {
     try {
         const response = await fetch('/bars'); 
         if (!response.ok) {
@@ -10,9 +10,13 @@ async function fetchBars() {
         const barContainer = document.getElementById('barContainer');
 
     
-        bars.forEach(bar => {
-            const barCard = document.createElement('div');
-            barCard.className = 'rounded-lg p-4 m-4 w-72 shadow hover:shadow-lg transition';
+       bars.forEach(bar => {
+            const barCard = document.createElement('button');
+            barCard.type = 'button';
+            barCard.className = 'rounded-lg p-4 m-4 w-72 shadow hover:shadow-lg transition text-left cursor-pointer focus:outline-none';
+
+            // Gem barens id som en data-attribut
+            barCard.dataset.barId = bar.id;
 
             barCard.innerHTML = `
                 <h3>${bar.name}</h3>
@@ -20,9 +24,13 @@ async function fetchBars() {
                 <p><strong>Rating:</strong> ${bar.rating || 'Ingen rating'}</p>
                 <p><strong>Antal anmeldelser:</strong> ${bar.user_ratings_total || 'Ingen anmeldelser'}</p>
                 <p><strong>Typer:</strong> ${bar.types.join(', ')}</p>
-                <div class="flex justify-between mt-2 space-x-2">    
-                </div>
             `;
+
+           
+           barCard.onclick = () => {
+            localStorage.setItem('selectedBarId', barCard.dataset.barId);
+            window.location.href = '/barInfo'; 
+            };
 
             barContainer.appendChild(barCard);
         });

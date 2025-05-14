@@ -48,3 +48,4 @@ router.get('/barInfo', async (req, res) => {
   res.send(barInfo); 
 });
 export default router;
+
