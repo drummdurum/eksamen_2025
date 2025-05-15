@@ -20,6 +20,33 @@ router.get('/bars', async (req, res) => {
     
     res.json(bars);
 });
+
+router.get('/bars/types', async (req, res) => {
+    const bars = await db.all('SELECT * FROM bars');
+    for (const bar of bars) {
+        const types = await db.all('SELECT type FROM bar_types WHERE bar_id = ?', [bar.id]);
+        bar.types = types.map(t => t.type);
+    }
+    res.json(bars);
+});
+
+router.get("/bars/names", async (req, res) => {
+    const name = req.query.name;
+    if (!name) return res.status(400).json({ error: "Mangler bar navn" });
+
+    try {
+        const bars = await db.all('SELECT * FROM bars WHERE name = ? COLLATE NOCASE',
+            [name.trim()]);
+        if (bars.length === 0) {
+            return res.status(404).json({ error: "Bar ikke fundet" });
+        }
+        res.json(bars);
+    } catch (err) {
+        console.error('Databasefejl:', err.message);
+        res.status(500).json({ error: "Databasefejl" });
+    }
+});
+
 router.get('/bars/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -65,16 +92,27 @@ router.get('/bars/:id/owerviews', async (req, res) => {
         res.status(500).send('Serverfejl');
     }
 });
-
 router.get('/bars/search/bars', async (req, res) => {
     const q = req.query.q;
     if (!q) return res.status(400).json({ error: "Mangler søgeord" });
 
     try {
-        const bars = await db.all('SELECT * FROM bars WHERE name LIKE ? COLLATE NOCASE', [`%${q}%`]);
+        const bars = await db.all(
+            'SELECT * FROM bars WHERE name LIKE ? COLLATE NOCASE',
+            [`%${q}%`]
+        );
+
         if (bars.length === 0) {
-            return res.status(404).json({ error: "Bar ikke fundet" }); // ✅ korrekt
+            return res.status(404).json({ error: "Bar ikke fundet" });
         }
+        for (const bar of bars) {
+            const types = await db.all(
+                'SELECT type FROM bar_types WHERE bar_id = ?',
+                [bar.id]
+            );
+            bar.types = types.map(t => t.type);
+        }
+
         res.json(bars);
     } catch (err) {
         console.error('Databasefejl:', err.message);
@@ -92,11 +130,12 @@ router.get('/bars/search-external/bars', async (req, res) => {
 router.post('/bars', async (req, res) => {
     try {
         const bar = req.body;
+        const vicinity = bar.vicinity || bar.formatted_address || '';
+
         const {
             name,
             rating,
             user_ratings_total,
-            vicinity,
             place_id,
             photo_reference,
             types = []

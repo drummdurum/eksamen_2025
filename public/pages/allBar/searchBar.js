@@ -4,12 +4,13 @@ const searchBar = document.getElementById('searchBar');
 const barContainer = document.getElementById('barContainer');
 searchBar.addEventListener('input', async function () {
     const query = searchBar.value.trim();
-    if (!query) {
-        await fetchBars();
-        return;
-    }
+        if (!query) {
+            await fetchBars();
+            return;
+        }
 
     let bars = [];
+    let usedExternal = false;
 
     try {
         let res = await fetch(`/bars/search/bars?q=${encodeURIComponent(query)}`);
@@ -24,8 +25,8 @@ searchBar.addEventListener('input', async function () {
         try {
             const res = await fetch(`/bars/search-external/bars?q=${encodeURIComponent(query)}`);
             if (res.ok) {
-                
                 bars = await res.json();
+                usedExternal = true;
             } else {
                 console.warn('Ekstern søgning returnerede fejl:', await res.text());
             }
@@ -34,18 +35,20 @@ searchBar.addEventListener('input', async function () {
         }
     }
 
-    renderBars(bars);
+    if (usedExternal) {
+        renderExternalBars(bars);
+    } else {
+        renderLocalBars(bars);
+    }
 });
 
-function renderBars(bars) {
+
+function renderExternalBars(bars) {
     barContainer.innerHTML = '';
     bars.forEach(bar => {
         const barCard = document.createElement('button');
         barCard.type = 'button';
         barCard.className = 'rounded-lg p-4 m-4 w-72 shadow hover:shadow-lg transition text-left cursor-pointer focus:outline-none';
-
-        
-        barCard.dataset.barId = bar.id;
 
         barCard.innerHTML = `
             <h3>${bar.name}</h3>
@@ -55,8 +58,65 @@ function renderBars(bars) {
             <p><strong>Typer:</strong> ${bar.types ? bar.types.join(', ') : ''}</p>
         `;
 
+        barCard.onclick = async () => {
+            const types = bar.types || [];
+            if (Array.isArray(types) && types.map(t => t.toLowerCase()).includes('bar')) {
+                // Tjek om baren allerede findes i databasen
+                let foundBarId = null;
+                try {
+                    const normalizedName = bar.name.trim();
+                    const res = await fetch(`/bars/names?name=${encodeURIComponent(normalizedName)}`);
+                    if (res.ok) {
+                        const bars = await res.json();
+                        if (bars.length > 0) {
+                            foundBarId = bars[0].id;
+                        }
+                    }
+                } catch (err) {
+                    console.error('Fejl ved tjek af eksisterende bar:', err);
+                }
+
+                if (foundBarId) {
+                    // Baren findes allerede, brug dens id
+                    localStorage.setItem('selectedBarId', foundBarId);
+                    window.location.href = '/barInfo';
+                } else {
+                    // Baren findes ikke, opret den
+                    const response = await fetch('/bars', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(bar)
+                    });
+                    const savedBar = await response.json();
+                    localStorage.setItem('selectedBarId', savedBar.barId);
+                    window.location.href = '/barInfo';
+                }
+            } else {
+                toastr.warning('Denne placering er ikke markeret som en bar og bliver ikke gemt.');
+            }
+        };
+
+        barContainer.appendChild(barCard);
+    }); 
+}
+
+function renderLocalBars(bars) {
+    barContainer.innerHTML = '';
+    bars.forEach(bar => {
+        const barCard = document.createElement('button');
+        barCard.type = 'button';
+        barCard.className = 'rounded-lg p-4 m-4 w-72 shadow hover:shadow-lg transition text-left cursor-pointer focus:outline-none';
+        barCard.dataset.barId = bar.id;
+
+        barCard.innerHTML = `
+            <h3>${bar.name}</h3>
+            <p><strong>Adresse:</strong> ${bar.vicinity || ''}</p>
+            <p><strong>Rating:</strong> ${bar.rating || 'Ingen rating'}</p>
+            <p><strong>Typer:</strong> ${bar.types ? bar.types.join(', ') : ''}</p>
+        `;
+
         barCard.onclick = () => {
-            localStorage.setItem('selectedBarId', barCard.dataset.barId);
+            localStorage.setItem('selectedBarId', bar.id);
             window.location.href = '/barInfo';
         };
 

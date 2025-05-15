@@ -24,3 +24,8 @@ export const profile = contructPage(profilePage, {title: 'Profil'});
 const barInfopage = readPage('./public/pages/barInfo/barInfo.html')
 export const barInfo = contructPage(barInfopage, {title: 'Bar Info'});
 
+const makesRouterpage = readPage('./public/pages/makesRoutes/makesRoutes.html')
+export const makesRouter = contructPage(makesRouterpage, {title: 'Lav rute'});
+
+
+

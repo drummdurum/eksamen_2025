@@ -47,5 +47,11 @@ import {barInfo} from '../../util/pages.js';
 router.get('/barInfo', async (req, res) => {
   res.send(barInfo); 
 });
+
+import {makesRouter} from '../../util/pages.js';
+router.get('/makesRoutes', async (req, res) => {
+  res.send(makesRouter); 
+});
+
 export default router;
 
