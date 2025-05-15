@@ -168,5 +168,34 @@ router.post('/bars', async (req, res) => {
     }
 });
 
+router.post('/bars/ratings', async (req, res) => {
+    const { barId, rating } = req.body;
+
+    if (!barId || !rating) {
+        return res.status(400).json({ error: 'Bar ID og rating er påkrævet' });
+    }
+
+    try {
+        const bar = await db.get('SELECT rating, user_ratings_total FROM bars WHERE id = ?', [barId]);
+        if (!bar) return res.status(404).json({ error: 'Bar ikke fundet' });
+
+        const oldAvg = bar.rating || 0;
+        const oldCount = bar.user_ratings_total || 0;
+        const newCount = oldCount + 1;
+        const newAvg = Math.round((((oldAvg * oldCount) + Number(rating)) / newCount) * 10) / 10;
+
+        await db.run('UPDATE bars SET rating = ?, user_ratings_total = ? WHERE id = ?', [newAvg, newCount, barId]);
+
+        res.status(200).json({ 
+            message: `Tak for din stemme!`,
+            newAvg,
+            newCount
+        });
+    } catch (error) {
+        console.error('Fejl ved opdatering af rating:', error);
+        res.status(500).json({ error: 'Intern serverfejl' });
+    }
+});
+
 export default router;
 

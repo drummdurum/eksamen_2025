@@ -20,15 +20,24 @@ fetch(`/bars/${barId}`)
 
     document.getElementById('barName').textContent = bar.name || 'Ukendt navn';
 
-    document.getElementById('barInfo').textContent = 
-      `Rating: ${bar.rating || 'Ingen'} `;
+   
+    document.getElementById('ratingen').textContent = 
+    `Rating: ${bar.rating || 'Ingen'} (${bar.user_ratings_total || 0} anmeldelser)`;
 
     document.getElementById('barTypes').textContent = 'Hvad kan de tilbyde: ' +
     `${Array.isArray(bar.types) ? bar.types.join(', ') : (bar.types || '')}`;
 
    
-    document.getElementById('barAdress').textContent ='Adresse: ' + bar.vicinity || 'Ukendt adresse';
-  })
+    const address = bar.vicinity || 'Ukendt adresse';
+    const mapsUrl = address !== 'Ukendt adresse'
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
+    : '#';
+
+    document.getElementById('barAdress').innerHTML =
+    address !== 'Ukendt adresse'
+      ? `Adresse: <a href="${mapsUrl}" target="_blank" class="underline text-blue-400 hover:text-blue-600">${address}</a>`
+      : 'Adresse: Ukendt adresse';
+    })
   .catch(err => {
     console.error('Fejl ved hentning af bar:', err);
   });
@@ -46,8 +55,8 @@ fetch(`/bars/${barId}/owerviews`)
   .then(res => res.json())
   .then(data => {
     document.getElementById('barInfo').textContent +=
-      (data.overview ? `\n${data.overview}` : '\nUkendt beskrivelse');
+      (data.overview ? `\n${data.overview}` : '\nDer er ingen beskrivelse tilgængelig') ;
   })
   .catch(() => {
-    document.getElementById('barInfo').textContent += '\nUkendt beskrivelse';
+    document.getElementById('barInfo').textContent += '\nDer er ingen beskrivelse tilgængelig';
 }); 
