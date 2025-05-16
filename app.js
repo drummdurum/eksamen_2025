@@ -26,6 +26,9 @@ app.use(barsRouter);
 import typesRouter from './serverAPI/routes/typesRoutes.js';
 app.use(typesRouter);
 
+import commentsRouter from './serverAPI/routes/commentsRouter.js';
+app.use(commentsRouter);
+
 
 const PORT = 8080;
 app.listen(PORT, () => {

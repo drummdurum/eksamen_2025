@@ -11,7 +11,7 @@ import 'dotenv/config';
 
 
 router.get('/bars', async (req, res) => {
-    const bars = await db.all(`SELECT * FROM bars`);
+    const bars = await db.all(`SELECT * FROM bars ORDER BY name COLLATE NOCASE ASC`);
 
     for (const bar of bars) {
         const types = await db.all(`SELECT type FROM bar_types WHERE bar_id = ?`, [bar.id]);

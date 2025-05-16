@@ -1,5 +1,6 @@
 const starRating = document.getElementById('starRating');
 const ratingMessage = document.getElementById('ratingMessage');
+const dropdownMenuMood = document.getElementById('dropdownMenuMood');
 let selectedRating = 0;
 
 let hasVoted = localStorage.getItem('hasVoted_' + barId) === 'true';

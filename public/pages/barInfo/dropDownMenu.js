@@ -1,6 +1,7 @@
-function setupDropdown(btnId, menuId) {
+function setupDropdown(btnId, menuId, moodId) {
   const btn = document.getElementById(btnId);
   const menu = document.getElementById(menuId);
+  const mood = document.getElementById(moodId);
 
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -44,3 +45,4 @@ function setupDropdown(btnId, menuId) {
 // Kald funktionen for hver dropdown
 setupDropdown('addToListBtnDrinks', 'dropdownMenuDrinks');
 setupDropdown('addToListBtnGames', 'dropdownMenuGames');
+setupDropdown('addToListBtnMood', 'dropdownMenuMood');

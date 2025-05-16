@@ -1,9 +1,9 @@
 import db from './../database/connection.js';
-
+//DROP TABLE IF EXISTS bars;
+  //  DROP TABLE IF EXISTS bar_types;
  
 await db.exec(`
-    DROP TABLE IF EXISTS bars;
-    DROP TABLE IF EXISTS bar_types;
+    
 
 
     CREATE TABLE IF NOT EXISTS bars (
