@@ -5,9 +5,25 @@ const sendBtn = document.getElementById('sendModalComment');
 const modalTextarea = document.getElementById('modalComment');
 const commentsUl = document.getElementById('commentsUl');
 
+let username = null;
 
+// Hent brugernavn fra backend
+async function fetchUsername() {
+  try {
+    const res = await fetch('/username');
+    if (res.ok) {
+      const user = await res.json();
+      username = user.username;
+    } else {
+      username = null;
+    }
+  } catch (err) {
+    username = null;
+  }
+}
+
+// Åbn kommentar-popup kun hvis logget ind
 openBtn.addEventListener('click', async () => {
-  // Tjek om brugeren er logget ind
   await fetchUsername();
   if (!username) {
     toastr.error('Du skal være logget ind for at skrive en kommentar!');
@@ -17,17 +33,19 @@ openBtn.addEventListener('click', async () => {
   modalTextarea.value = '';
 });
 
+// Luk popup
 closeBtn.addEventListener('click', () => {
   modal.classList.add('hidden');
 });
 
+// Indlæs kommentarer
 async function loadComments() {
   const res = await fetch(`/bars/${barId}/comments`);
   const comments = await res.json();
   commentsUl.innerHTML = '';
   if (comments.length === 0) {
     const li = document.createElement('li');
-    li.textContent = 'Hver den første til at skrive en kommentar!';
+    li.textContent = 'Vær den første til at skrive en kommentar!';
     li.className = 'text-gray-400 italic';
     commentsUl.appendChild(li);
     return;
@@ -41,6 +59,7 @@ async function loadComments() {
 
 loadComments();
 
+// Send kommentar
 sendBtn.addEventListener('click', async () => {
   const text = modalTextarea.value.trim();
   if (!text || !username) return;
@@ -57,23 +76,6 @@ sendBtn.addEventListener('click', async () => {
     modal.classList.add('hidden');
     loadComments();
   } catch (err) {
-    toastr.error('Du skal være logget ind for at skrive en kommentar! måske fejl i netværket');
+    toastr.error('Du skal være logget ind for at skrive en kommentar! Måske fejl i netværket');
   }
 });
-
-
-let username = null;
-
-async function fetchUsername() {
-  try {
-    const res = await fetch('/username');
-    if (res.ok) {
-      const user = await res.json();
-      username = user.username; 
-    }
-  } catch (err) {
-    username = null;
-  }
-}
-
-fetchUsername();

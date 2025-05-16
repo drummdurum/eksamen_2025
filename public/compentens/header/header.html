@@ -14,18 +14,19 @@
     $CSS-LINKS$
 </head>
 <body class="bg-gradient-to-r via-green-700 from-black to-green-900 min-h-screen text-white">
-    <nav class="flex items-center p-4 bg-gray-800 text-white justify-center justify-between">
-        <h1>Hvilken bar skal du på?</h1>
-        <div class="flex space-x-4">
-            <button onclick="window.location.href='/'">home</button> 
-            <button onclick="window.location.href='/allBar'">allBar</button> 
-            <button onclick="window.location.href='/addBar'">addBar</button>
-            <button onclick="window.location.href='/profile'">profil</button> 
-            <button onclick="window.location.href='/makesRoutes'">Lav route</button> 
-        <div>
-            <button onclick="window.location.href='/login'">login</button> 
-            <button onclick="window.location.href='/logud'">logud</button> 
-        </div>
-    </nav>    
-<main class="min-h-screen flex flex-col items-center justify-center p-4">
+  <nav class="flex flex-col md:flex-row items-center md:justify-between p-4 bg-gray-800 gap-4">
+    <h1 class="text-xl font-bold text-center md:text-left">Hvilken bar skal du på?</h1>
+
+    <div class="flex flex-wrap justify-center gap-2">
+      <button onclick="window.location.href='/'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Home</button>
+      <button onclick="window.location.href='/allBar'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">AllBar</button>
+      <button onclick="window.location.href='/addBar'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">AddBar</button>
+      <button onclick="window.location.href='/profile'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Profil</button>
+      <button onclick="window.location.href='/makesRoutes'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Lav Route</button>
+      <button onclick="window.location.href='/login'" class="px-3 py-1 bg-blue-600 rounded hover:bg-blue-700">Login</button>
+      <button onclick="window.location.href='/logud'" class="px-3 py-1 bg-red-600 rounded hover:bg-red-700">Logud</button>
+    </div>
+  </nav>
+
+  <main class="min-h-screen flex flex-col items-center justify-center p-4">
     
