@@ -1,0 +1,73 @@
+<div class="flex flex-col gap-4 w-full min-h-screen p-4 bg-gray-800 text-white rounded-lg shadow-lg">
+    <div class="flex flex-col sm:flex-row gap-4 items-start w-full h-full">
+        <!-- Venstre side -->
+        <div class="flex flex-col gap-2 w-full sm:w-2/3">
+            <h1 class="text-3xl font-bold text-center">Søg på en bestemt bar</h1>
+            <div class="flex flex-col sm:flex-row gap-2 w-full items-center">
+                <input 
+                    type="text" 
+                    id="searchBar" 
+                    placeholder="Søg efter bar..." 
+                    class="p-2 rounded border w-full sm:w-auto text-black shadow flex-1"
+                />
+                <select id="travelMode" class="p-2 rounded border-2 border-blue-500 bg-blue-900 text-white font-semibold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 transition w-full sm:w-auto">
+                    <option value="walking">Gå</option>
+                    <option value="bicycling">Cykel</option>
+                    <option value="transit">Off. transport</option>
+                </select>
+                <button id="clearRouteBtn" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-2 sm:mb-0 w-full sm:w-auto">
+                    Ryd rute
+                </button>
+                <button id="saveRouteBtn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-2 sm:mb-0 w-full sm:w-auto">
+                    Gem rute
+                </button>
+            </div>
+            <h3 class="text-2xl font-bold text-center">Skriv ind hvor du gerne ville starte</h3>
+            <ul id="selectedBarsList" class="mb-2 text-sm text-gray-300"></ul>
+            <div class="flex flex-col gap-2 mb-2">
+                <input id="startInput" type="text" placeholder="Start (fx Nørrebrogade 5, København)" class="p-2 rounded border w-full text-black shadow" />
+            </div>
+        </div>
+        <!-- Højre side -->
+        <div class="flex flex-col gap-2 w-1/3 sm:w-1/3 justify-center items-center">
+            <select id="guestTypeFilter" class="p-2 rounded border-2 border-blue-500 bg-blue-900 text-white font-semibold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 transition sm:w-40">
+                <option value="">Stemning</option>
+                <option value="hyggelig">Hyggelig</option>
+                <option value="festlig">Festlig</option>
+                <option value="rolig">Rolig</option>
+                <option value="loud">Loud</option>
+                <option value="intim">Intim</option>
+                <option value="Bodega style">Bodega style</option>
+                <option value="night_club">Night club</option>
+            </select>
+            <select id="drinkTypeFilter" class="p-2 rounded border-2 border-blue-500 bg-blue-900 text-white font-semibold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 transition sm:w-40">
+                <option value="">Drikkelse</option>
+                <option value="Drinks">Drinks</option>
+                <option value="Vin bar">Vin bar</option>
+                <option value="Tab house">Tab house</option>
+            </select>
+            <select id="activityTypeFilter" class="p-2 rounded border-2 border-blue-500 bg-blue-900 text-white font-semibold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 transition sm:w-40">
+                <option value="">Aktiviteter</option>
+                <option value="Brætspil">Brætspil</option>
+                <option value="petanque">Petanque</option>
+                <option value="miniGolf">miniGolf</option>
+                <option value="billiard/Pool">Billiard/Pool</option>
+                <option value="shuffleboard">Shuffleboard</option>
+                <option value="beer pong">Beer pong</option>
+            </select>
+            <h1 class="text-2xl font-bold text-center">Søg på en bestemt bar</h1>
+        </div>
+    </div>
+    <div class="flex flex-col md:flex-row gap-4 w-full ">
+        <div class="w-full md:w-2/3 h-128 md:h-68 border-2 border-gray-700 flex justify-center items-center mb-4 md:mb-0" id="mapContainer">
+            <iframe id="mapFrame" class="w-full h-full rounded" style="min-height:250px;" frameborder="0"></iframe>
+        </div>
+        <div class="w-full md:w-1/3 px-4 pb-10 flex flex-col gap-4 justify-center h-96 overflow-y-auto" id="barContainer">
+            <div class="w-full flex justify-center items-center">
+                <p class="text-gray-500">Søg på en som du ville havde med på en route</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="../../pages/makesRoutes/searchBarRouter.js"></script>

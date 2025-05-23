@@ -1,17 +1,40 @@
 import { fetchBars } from './../../pages/allBar/fechtAllBar.js';
+import { fetchBarsList } from './../../pages/allBar/fechtAllBar.js';
 
 const searchBar = document.getElementById('searchBar');
 const barContainer = document.getElementById('barContainer');
+const guestTypeFilter = document.getElementById('guestTypeFilter');
+const drinkTypeFilter = document.getElementById('drinkTypeFilter');
+const activityTypeFilter = document.getElementById('activityTypeFilter');
+
+
+function filterBarsByTypes(bars) {
+    const guestType = guestTypeFilter.value;
+    const drinkType = drinkTypeFilter.value;
+    const activityType = activityTypeFilter.value;
+
+    return bars.filter(bar => {
+        const types = (bar.types || []).map(t => t.toLowerCase());
+        return (!guestType || types.includes(guestType.toLowerCase())) &&
+               (!drinkType || types.includes(drinkType.toLowerCase())) &&
+               (!activityType || types.includes(activityType.toLowerCase()));
+    });
+}
+
+
 searchBar.addEventListener('input', async function () {
     const query = searchBar.value.trim();
-        if (!query) {
-            await fetchBars();
-            return;
-        }
-
     let bars = [];
     let usedExternal = false;
 
+    if (!query) {
+        bars = await fetchBarsList() || [];
+        const filtered = filterBarsByTypes(bars);
+        renderLocalBars(filtered);
+        return;
+    }
+
+   
     try {
         let res = await fetch(`/bars/search/bars?q=${encodeURIComponent(query)}`);
         if (res.ok) {
@@ -34,13 +57,17 @@ searchBar.addEventListener('input', async function () {
             console.error('Fejl ved ekstern søgning:', err);
         }
     }
-
+    const filtered = filterBarsByTypes(bars);
     if (usedExternal) {
-        renderExternalBars(bars);
+        renderExternalBars(filtered);
     } else {
-        renderLocalBars(bars);
+        renderLocalBars(filtered);
     }
 });
+
+ [guestTypeFilter, drinkTypeFilter, activityTypeFilter].forEach(filter =>
+    filter.addEventListener('change', () => searchBar.dispatchEvent(new Event('input')))
+    );
 
 
 function renderExternalBars(bars) {
@@ -61,7 +88,6 @@ function renderExternalBars(bars) {
         barCard.onclick = async () => {
             const types = bar.types || [];
             if (Array.isArray(types) && types.map(t => t.toLowerCase()).includes('bar')) {
-                // Tjek om baren allerede findes i databasen
                 let foundBarId = null;
                 try {
                     const normalizedName = bar.name.trim();
@@ -77,11 +103,11 @@ function renderExternalBars(bars) {
                 }
 
                 if (foundBarId) {
-                    // Baren findes allerede, brug dens id
+                    
                     localStorage.setItem('selectedBarId', foundBarId);
                     window.location.href = '/barInfo';
                 } else {
-                    // Baren findes ikke, opret den
+                
                     const response = await fetch('/bars', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },

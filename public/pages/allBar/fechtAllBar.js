@@ -15,7 +15,6 @@ export async function fetchBars() {
             barCard.type = 'button';
             barCard.className = 'rounded-lg p-4 m-4 w-72 shadow hover:shadow-lg transition text-left cursor-pointer focus:outline-none';
 
-            // Gem barens id som en data-attribut
             barCard.dataset.barId = bar.id;
 
             barCard.innerHTML = `
@@ -39,3 +38,15 @@ export async function fetchBars() {
     }
 }
 fetchBars();
+
+
+export async function fetchBarsList() {
+    try {
+        const response = await fetch('/bars');
+        if (!response.ok) throw new Error('Fejl ved hentning af barer');
+        return await response.json(); // Returnér kun listen!
+    } catch (error) {
+        console.error('Fejl:', error);
+        return [];
+    }
+}

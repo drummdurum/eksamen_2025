@@ -58,4 +58,19 @@ function highlightStars(rating) {
   });
 }
 
+const socket = io();
 
+
+socket.emit('joinBar', barId);
+
+socket.on('newRating', ({newAvg, newCount}) => {
+  updateAverageUI(newAvg, newCount);
+});
+
+function updateAverageUI(avg, count) {
+  const avgSpan = document.getElementById('avgRatingText');
+  const countSpan = document.getElementById('totalVotesText');
+
+  if (avgSpan) avgSpan.textContent = avg.toFixed(1);
+  if (countSpan) countSpan.textContent = count;
+}

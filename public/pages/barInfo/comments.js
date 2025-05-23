@@ -63,19 +63,32 @@ loadComments();
 sendBtn.addEventListener('click', async () => {
   const text = modalTextarea.value.trim();
   if (!text || !username) return;
+
   try {
     const res = await fetch('/bars/comments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ barId, text, username }),
     });
+
     if (res.status === 401) {
       toastr.error('Du skal være logget ind for at skrive en kommentar!');
       return;
     }
+
     modal.classList.add('hidden');
-    loadComments();
+    modalTextarea.value = '';
+    // Ikke brug loadComments her – socketen opdaterer listen for os
   } catch (err) {
-    toastr.error('Du skal være logget ind for at skrive en kommentar! Måske fejl i netværket');
+    toastr.error('Fejl: Kunne ikke sende kommentaren.');
   }
+});
+
+
+socket.emit('joinBar', barId);
+
+socket.on('newComment', (data) => {
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="font-bold">${data.username}:</span> ${data.text}`;
+  commentsUl.appendChild(li);
 });

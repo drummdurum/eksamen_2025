@@ -52,7 +52,7 @@ router.get('/bars/:id', async (req, res) => {
     try {
         const bar = await db.get('SELECT * FROM bars WHERE id = ?', [id]);
         if (!bar) return res.status(404).send('Bar ikke fundet');
-        // Hent typer fra bar_types
+        
         const types = await db.all('SELECT type FROM bar_types WHERE bar_id = ?', [id]);
         bar.types = types.map(t => t.type);
         res.status(200).json(bar);
@@ -141,7 +141,6 @@ router.post('/bars', async (req, res) => {
             types = []
         } = bar;
 
-        // Indsæt bar
         const result = await db.run(`
             INSERT INTO bars (name, rating, user_ratings_total, vicinity, place_id, photo_reference)
             VALUES (?, ?, ?, ?, ?, ?)
@@ -149,11 +148,10 @@ router.post('/bars', async (req, res) => {
 
         const barId = result.lastID;
 
-        // Filtrer typer hvis nødvendigt
+        
         const skipTypes = ["lodging", "point_of_interest", "establishment"];
         const filteredTypes = types.filter(type => !skipTypes.includes(type));
-
-        // Indsæt typer
+        
         for (const type of filteredTypes) {
             await db.run(`
                 INSERT INTO bar_types (bar_id, type)
@@ -185,6 +183,14 @@ router.post('/bars/ratings', async (req, res) => {
         const newAvg = Math.round((((oldAvg * oldCount) + Number(rating)) / newCount) * 10) / 10;
 
         await db.run('UPDATE bars SET rating = ?, user_ratings_total = ? WHERE id = ?', [newAvg, newCount, barId]);
+        
+        req.app.get('io').to(`bar-${barId}`).emit('newRating', {
+            barId,
+            rating,
+            newAvg,
+            newCount,
+            username: req.session?.user?.username || 'Ukendt bruger'
+        });
 
         res.status(200).json({ 
             message: `Tak for din stemme!`,
