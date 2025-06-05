@@ -56,7 +56,6 @@ router.post('/loginSent', async (req, res) => {
 });
 
 router.get('/logud', (req, res) => {
-    // Ødelæg sessionen
     req.session.destroy(err => {
         if (err) {
             console.error('Fejl under logout:', err);
@@ -107,6 +106,14 @@ router.post('/signup', async (req, res) => {
         console.error('Fejl under oprettelse af bruger:', error);
         res.status(500).send({ message: 'Intern serverfejl' });
     }
+});
+
+router.get('/me', (req, res) => {
+  if (req.session && req.session.user) {
+    res.json({ user: req.session.user });
+  } else {
+    res.status(401).json({ user: null });
+  }
 });
 
 export default router;

@@ -25,6 +25,9 @@ document.getElementById('travelMode').addEventListener('change', () => {
     updateRouteOnMap();
 });
 
+document.getElementById('RefredsRoute').addEventListener('click', () => {
+    updateRouteOnMap();
+});
 
 document.getElementById('clearRouteBtn').addEventListener('click', () => {
     selectedBars.length = 0; 
@@ -37,7 +40,6 @@ async function showAllBars() {
     renderLocalBars(bars);
 }
 
-// Kald denne ved load og når søgefeltet er tomt:
 showAllBars();
 
 searchBar.addEventListener('input', async function () {
@@ -142,15 +144,49 @@ async function updateRouteOnMap() {
     const start = document.getElementById('startInput').value.trim() || "København";
     const selectedBarsList = document.getElementById('selectedBarsList');
     selectedBarsList.innerHTML = '';
+
     selectedBars.forEach((barObj, idx) => {
         const li = document.createElement('li');
         li.textContent = barObj.name;
-        li.className = "cursor-pointer hover:text-red-400 transition";
-        li.title = "Klik for at fjerne fra ruten";
-        li.onclick = () => {
-            selectedBars.splice(idx, 1); 
-            updateRouteOnMap();          
+        li.className = "cursor-move hover:text-red-400 transition";
+        li.title = "Træk for at ændre rækkefølge eller klik for at fjerne";
+        li.draggable = true;
+
+        li.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', idx);
+            li.classList.add('opacity-50');
+        });
+        li.addEventListener('dragend', () => {
+            li.classList.remove('opacity-50');
+        });
+        li.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            li.classList.add('bg-blue-900');
+        });
+        li.addEventListener('dragleave', () => {
+            li.classList.remove('bg-blue-900');
+        });
+        li.addEventListener('drop', (e) => {
+            e.preventDefault();
+            li.classList.remove('bg-blue-900');
+            const fromIdx = Number(e.dataTransfer.getData('text/plain'));
+            const toIdx = idx;
+            if (fromIdx !== toIdx) {
+                
+                const [moved] = selectedBars.splice(fromIdx, 1);
+                selectedBars.splice(toIdx, 0, moved);
+                updateRouteOnMap();
+            }
+        });
+
+        li.onclick = (ev) => {
+            
+            if (ev.type === "click" && !ev.defaultPrevented) {
+                selectedBars.splice(idx, 1);
+                updateRouteOnMap();
+            }
         };
+
         selectedBarsList.appendChild(li);
     });
 
