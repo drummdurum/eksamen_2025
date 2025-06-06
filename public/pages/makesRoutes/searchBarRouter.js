@@ -19,7 +19,7 @@ if (typeFilter) {
     });
 }
 
-const selectedBars = [];
+export const selectedBars = [];
 
 document.getElementById('travelMode').addEventListener('change', () => {
     updateRouteOnMap();
@@ -130,7 +130,7 @@ function renderLocalBars(bars) {
             const rawAddress = bar.vicinity || bar.formatted_address || '';
             const address = simplifyAddress(rawAddress);
             if (address && !selectedBars.some(b => b.address === address)) {
-                selectedBars.push({ name: bar.name, address });
+                selectedBars.push({ name: bar.name, address, barId: bar.id });
             }
             updateRouteOnMap();
         };
@@ -140,7 +140,7 @@ function renderLocalBars(bars) {
 }
 
 
-async function updateRouteOnMap() {
+export async function updateRouteOnMap() {
     const start = document.getElementById('startInput').value.trim() || "København";
     const selectedBarsList = document.getElementById('selectedBarsList');
     selectedBarsList.innerHTML = '';

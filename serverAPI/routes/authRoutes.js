@@ -6,6 +6,16 @@ import {sendMail} from './../../util/mailService/sendMail.js';
 
 const router = Router();
 
+
+router.get('/me', (req, res) => {
+  if (req.session && req.session.user) {
+    res.json({ user: req.session.user });
+  } else {
+    res.status(401).json({ user: null });
+  }
+});
+
+
 router.post('/loginSent', async (req, res) => {
     const { username, password } = req.body;
 
@@ -106,14 +116,6 @@ router.post('/signup', async (req, res) => {
         console.error('Fejl under oprettelse af bruger:', error);
         res.status(500).send({ message: 'Intern serverfejl' });
     }
-});
-
-router.get('/me', (req, res) => {
-  if (req.session && req.session.user) {
-    res.json({ user: req.session.user });
-  } else {
-    res.status(401).json({ user: null });
-  }
 });
 
 export default router;

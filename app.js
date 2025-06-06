@@ -53,6 +53,12 @@ app.use(commentsRouter);
 import googleApiRouter from './serverAPI/routes/googleRouteRoutes.js';
 app.use(googleApiRouter);
 
+import routesRouter from './serverAPI/routes/routesRoutes.js';
+app.use(routesRouter);
+
+import mustTryRouter from './serverAPI/routes/mustTryRouter.js';
+app.use(mustTryRouter);
+
 
 const PORT = 8080;
 server.listen(PORT, () => {

@@ -1,30 +1,24 @@
 <div class="flex flex-col gap-4 w-full min-h-screen p-4 bg-gray-800 text-white rounded-lg shadow-lg">
 
-  <!-- Bar navn -->
   <div class="w-full flex flex-wrap justify-center text-center">
     <h1 class="text-2xl font-bold w-full" id="barName">bar name</h1>
   </div>
 
-  <!-- Info-sektion -->
   <div class="flex flex-col lg:flex-row flex-wrap gap-4 justify-center items-center w-full">
 
-    <!-- Billede -->
     <div class="w-full md:w-1/2 h-64">
       <div id="barImage" class="w-full h-full bg-gray-700 rounded-lg shadow-lg">billede</div>
     </div>
 
-    <!-- Info-bokse -->
     <div class="flex flex-col gap-2 w-full md:w-1/2 lg:w-1/3">
       <div id="barInfo" class="bg-gray-700 rounded-lg shadow-lg p-4">Bar info her</div>
       <div id="barTypes" class="bg-gray-700 rounded-lg shadow-lg p-4">
         <p>Hvad kan Baren tilbyde</p>
       </div>
 
-      <!-- Dropdowns -->
       <div class="relative flex flex-col gap-2">
         <p>Hjælp med at fortælle hvad man kan her!</p>
 
-        <!-- Drinks -->
         <div class="relative">
           <button id="addToListBtnDrinks" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded w-full">
             Drikkelse
@@ -36,7 +30,6 @@
           </div>
         </div>
 
-        <!-- Games -->
         <div class="relative">
           <button id="addToListBtnGames" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded w-full">
             Games/Event
@@ -53,7 +46,6 @@
           </div>
         </div>
 
-        <!-- Mood -->
         <div class="relative">
           <button id="addToListBtnMood" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded w-full">
             Stemning
@@ -70,22 +62,18 @@
         </div>
       </div>
 
-      <!-- Adresse -->
       <div id="barAdress" class="bg-gray-700 rounded-lg shadow-lg p-4 mt-2">Adresse</div>
     </div>
   </div>
 
-  <!-- Kommentar + vote + lister -->
   <div class="flex flex-col md:flex-row flex-wrap gap-4 justify-center items-start w-full mt-6">
 
-    <!-- Kommentar -->
     <div class="w-full md:w-1/2 lg:w-1/3 bg-gray-700 rounded-lg shadow-lg p-4 flex flex-col gap-2">
       <h2 class="text-lg font-bold">Kommentarer</h2>
       <ul id="commentsUl" class="space-y-2 h-32 overflow-y-auto bg-gray-800 p-2 rounded"></ul>
       <button id="openCommentModal" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded self-center">Skriv kommentar</button>
     </div>
 
-    <!-- Vote -->
     <div id="barVote" class="w-full md:w-1/4 bg-gray-700 rounded-lg shadow-lg p-4 flex flex-col items-center gap-4">
       <h1 class="text-xl font-bold">Vote</h1>
       <div class="flex flex-col items-center gap-2">
@@ -102,13 +90,12 @@
       </div>
     </div>
 
-    <!-- Gem bar -->
     <div class="w-full md:w-1/2 lg:w-1/3 bg-gray-700 rounded-lg shadow-lg p-4 flex flex-col items-center gap-4">
       <p>Du kan vælge at gemme en bar, som du kan finde i din profil</p>
       <div class="flex flex-wrap justify-center gap-2">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Ynglingslisten</button>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Must try</button>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">BarCrawl</button>
+        <button id="mustTryBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Must try</button>
+        <button id="addToCrawlBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">BarCrawl</button>
+        <div id="crawlDropdown" class="hidden absolute bg-white text-black rounded shadow-lg mt-2 z-50"></div>
       </div>
     </div>
   </div>
@@ -125,9 +112,22 @@
   </div>
 </div>
 
+<div id="routeNameModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-800 p-6 rounded shadow-lg flex flex-col gap-4 w-80">
+    <h2 class="text-lg font-bold text-white">Navngiv din rute</h2>
+    <input id="routeNameInput" type="text" class="p-2 rounded bg-gray-700 text-white" placeholder="Rutenavn">
+    <div class="flex justify-end gap-2">
+      <button id="cancelRouteName" class="px-4 py-2 bg-gray-600 rounded text-white hover:bg-gray-700">Annuller</button>
+      <button id="saveRouteName" class="px-4 py-2 bg-green-600 rounded text-white hover:bg-green-700">Gem</button>
+    </div>
+  </div>
+</div>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="../../pages/barInfo/barInfo.js"></script>
 <script src="../../pages/barInfo/dropDownMenu.js"></script>
 <script src="../../pages/barInfo/rating.js"></script>
 <script src="../../pages/barInfo/comments.js"></script>
+<script type="module" src="../../pages/barInfo/addToCrawl.js"></script>
+<script src="../../pages/barInfo/addNewMustTry.js"></script>
 
