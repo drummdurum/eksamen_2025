@@ -27,5 +27,17 @@ export const barInfo = contructPage(barInfopage, {title: 'Bar Info'});
 const makesRouterpage = readPage('./public/pages/makesRoutes/makesRoutes.html')
 export const makesRouter = contructPage(makesRouterpage, {title: 'Lav rute'});
 
+const temaPage = readPage('./public/pages/tema/tema.html')
+export const tema = contructPage(temaPage, {title: 'Tema'});
+
+const paymentPage = readPage('./public/pages/payment/payment.html')
+export const payment = contructPage(paymentPage, {title: 'Betaling'});
+
+const successPage = readPage('./public/pages/payment/succes.html')
+export const success = contructPage(successPage, {title: 'Betaling gennemført'});
+
+const errorPage = readPage('./public/pages/payment/cancel.html')
+export const error = contructPage(errorPage, {title: 'Betaling fejlet'});
+
 
 

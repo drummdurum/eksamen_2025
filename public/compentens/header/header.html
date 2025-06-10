@@ -10,6 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="./../../compentens/asset/js/dropDownLogin.js"></script>
+    <script type="module" src="./../../compentens/asset/js/cart.js"></script>
     
     <title>$NAV-TITLE$</title>
     $CSS-LINKS$
@@ -22,7 +23,12 @@
       <button onclick="window.location.href='/'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Forsiden</button>
       <button onclick="window.location.href='/allBar'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Se alle bare</button>
       <button onclick="window.location.href='/addBar'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Ny Bar?</button>
+      <button onclick="window.location.href='/tema'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Tema til barcrawl</button>
       <button onclick="window.location.href='/makesRoutes'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Lav din egen route</button>
+      <div class="relative inline-block">
+        <button id="cartBtn" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700 relative">🛒</button>
+        <div id="cartDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded shadow-lg z-50 text-black"></div>
+      </div>
     </div>
     <div class="relative inline-block text-left">
       <button id="profileMenuBtn" class="flex items-center px-3 py-1 bg-green-600 rounded hover:bg-green-700 focus:outline-none">

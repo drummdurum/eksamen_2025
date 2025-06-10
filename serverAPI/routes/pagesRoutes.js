@@ -12,9 +12,9 @@ router.get('/', async (req, res) => {
 
 import {loginPage} from '../../util/pages.js';
 router.get('/login', async (req, res) => {
-  const message = req.session?.message || null; // Hent beskeden fra sessionen, hvis den findes
-  req.session.message = null; // Ryd beskeden efter brug
-  res.send(loginPage.replace('{{message}}', message || '')); // Indsæt beskeden i HTML'en
+  const message = req.session?.message || null; 
+  req.session.message = null; 
+  res.send(loginPage.replace('{{message}}', message || '')); 
 });
 
 import {adminpageNyBar} from '../../util/pages.js';
@@ -51,6 +51,26 @@ router.get('/barInfo', async (req, res) => {
 import {makesRouter} from '../../util/pages.js';
 router.get('/makesRoutes', async (req, res) => {
   res.send(makesRouter); 
+});
+
+import {tema} from '../../util/pages.js';
+router.get('/tema', async (req, res) => {
+  res.send(tema); 
+});
+
+import {payment} from '../../util/pages.js';
+router.get('/payment', authMiddleware, async (req, res) => {
+  res.send(payment); 
+});
+
+import {success} from '../../util/pages.js';
+router.get('/success', async (req, res) => {
+  res.send(success); 
+});
+
+import {error} from '../../util/pages.js';
+router.get('/cancel', async (req, res) => {
+  res.send(error); 
 });
 
 export default router;

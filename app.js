@@ -2,6 +2,7 @@ import express from 'express';
 import sessionMiddleware from './serverSSR/session.js';
 import http from 'http';
 import { Server } from 'socket.io';
+import { webhookRouter, paymentsRouter } from './serverAPI/routes/paymentsRouters.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -21,11 +22,17 @@ io.on("connection", (socket) => {
     });
 });
 
-app.use(express.static('public'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(webhookRouter);
 
 app.use(sessionMiddleware);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use(paymentsRouter);
+
+app.use(express.static('public'));
+
+app.use(express.urlencoded({ extended: true }));
 
 app.set('io', io);
 

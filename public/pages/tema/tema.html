@@ -1,0 +1,42 @@
+
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-4">Tema til barcrawl</h2>
+    <p class="mb-4">Her kan du vælge et tema til din barcrawl. Vælg et tema, der passer til din fest!</p>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="bg-green rounded-lg shadow p-6 w-full min-h-[500px] flex flex-col items-center">
+        <h3 class="text-2xl font-semibold mb-4">Golf</h3>
+        <img src="./../../compentens/image/Golf billede.png" alt="Pub Golf" class="w-full h-64 object-cover mb-4 rounded">
+        <p class="mb-2">Pub Golf er en sjov og social aktivitet, hvor deltagerne besøger forskellige barer og drikker bestemte drinks i hver bar. Hver drink har et "par", som angiver, hvor mange slurke der skal tages for at fuldføre drinken.</p>
+        <a href="https://crawlsf.com/how-to-play-pub-golf/#Here_is_an_example_of_a_common_setup_for_Pub_Golf" target="_blank" class="text-blue-500 underline hover:text-blue-700 mb-2">
+          Se eksempel på Pub Golf setup
+        </a>
+        <button id="outfits" class="mt-auto px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700">Køb outfits</button>
+      </div>
+
+      <div class="bg-green rounded-lg shadow p-6 w-full min-h-[500px] flex flex-col items-center">
+        <h3 class="text-2xl font-semibold mb-4">80'erne</h3>
+        <p class="mb-2">Få nogle klassiske 80'er outfits.</p>
+      </div>
+      <div class="bg-green rounded-lg shadow p-6 w-full min-h-[500px] flex flex-col items-center">
+        <h3 class="text-2xl font-semibold mb-4">Tema 3: Superhelte</h3>
+        <p class="mb-2">Beskrivelse af superhelte-temaet.</p>
+      </div>
+    </div>
+</div>
+
+<div id="outfitModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <form id="outfitForm" class="bg-gray-800 p-6 rounded shadow-lg flex flex-col gap-4 w-[28rem] max-h-[90vh] overflow-y-auto">
+    <h2 class="text-lg font-bold text-white">Køb outfit</h2>
+    <div id="personsContainer" class="flex flex-col gap-4">
+      <!-- Person felter tilføjes her med JS -->
+    </div>
+    <button type="button" id="addPersonBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 self-start">+ Tilføj person</button>
+    <div class="flex justify-end gap-2">
+      <button type="button" id="cancelOutfit" class="px-4 py-2 bg-gray-600 rounded text-white hover:bg-gray-700">Annuller</button>
+      <button type="submit" class="px-4 py-2 bg-green-600 rounded text-white hover:bg-green-700">Køb</button>
+    </div>
+  </form>
+</div>
+
+<script type="module" src="./../../pages/tema/orderGolfTema.js"></script>
