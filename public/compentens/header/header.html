@@ -11,6 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="./../../compentens/asset/js/dropDownLogin.js"></script>
     <script type="module" src="./../../compentens/asset/js/cart.js"></script>
+    <script src="./../../compentens/asset/js/styleMobil.js"></script>
     
     <title>$NAV-TITLE$</title>
     $CSS-LINKS$
@@ -18,7 +19,44 @@
 <body class="bg-gradient-to-r via-green-700 from-black to-green-900 min-h-screen text-white">
  <nav class="flex flex-row items-center justify-between p-4 bg-gray-800 gap-4 w-full">
   <h1 class="text-xl font-bold text-left">Hvilken bar skal du på?</h1>
-  <div class="flex flex-wrap justify-center gap-2">
+  <!-- Mobil burger-menu -->
+  <div class="sm:hidden relative">
+    <button id="menuToggle" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">
+      ☰
+    </button>
+  <div id="mobileMenu" class="hidden absolute right-2 top-12 w-60 bg-gradient-to-br from-green-900 via-green-800 to-black rounded-2xl shadow-2xl z-50 text-white flex flex-col border border-green-700">
+  <button onclick="window.location.href='/'" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 rounded-t-2xl transition">
+    <span>🏠</span> Forsiden
+  </button>
+  <button onclick="window.location.href='/allBar'" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 transition">
+    <span>🍻</span> Se alle bare
+  </button>
+  <button onclick="window.location.href='/addBar'" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 transition">
+    <span>➕</span> Ny Bar?
+  </button>
+  <button onclick="window.location.href='/tema'" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 transition">
+    <span>🎭</span> Tema til barcrawl
+  </button>
+  <button onclick="window.location.href='/makesRoutes'" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 transition">
+    <span>🗺️</span> Lav din egen route
+  </button>
+  <button id="cartBtnMobile" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 transition">
+    <span>🛒</span> Kurv
+  </button>
+  <hr class="my-2 border-green-700 opacity-60">
+  <button onclick="window.location.href='/profile'" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 transition">
+    <span>👤</span> Profil
+  </button>
+  <button onclick="window.location.href='/login'" id="loginBtnMobile" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 transition">
+    <span>🔑</span> Login
+  </button>
+  <button onclick="window.location.href='/logud'" id="logoutBtnMobile" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 rounded-b-2xl transition">
+    <span>🚪</span> Logud
+  </button>
+</div>
+  </div>
+  <!-- Desktop knapper -->
+  <div class="hidden sm:flex flex-wrap justify-center gap-2">
     <div>
       <button onclick="window.location.href='/'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Forsiden</button>
       <button onclick="window.location.href='/allBar'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Se alle bare</button>
@@ -30,12 +68,10 @@
         <div id="cartDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded shadow-lg z-50 text-black"></div>
       </div>
     </div>
+    <!-- Profil-menu beholdes som før -->
     <div class="relative inline-block text-left">
       <button id="profileMenuBtn" class="flex items-center px-3 py-1 bg-green-600 rounded hover:bg-green-700 focus:outline-none">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
+        <!-- SVG ... -->
       </button>
       <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white rounded shadow-lg z-50 text-black">
         <a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Profil</a>
