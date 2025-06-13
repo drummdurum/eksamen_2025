@@ -62,6 +62,22 @@ router.get('/bars/:id', async (req, res) => {
     }
 });
 
+router.get('/bars/by-ids/finds', async (req, res) => {
+    const ids = (req.query.ids || '').split(',').map(id => id.trim()).filter(Boolean);
+    if (!ids.length) return res.status(400).json({ error: "Ingen id'er angivet" });
+
+    const bars = [];
+    for (const id of ids) {
+        const bar = await db.get('SELECT * FROM bars WHERE id = ?', [id]);
+        if (bar) {
+            const types = await db.all('SELECT type FROM bar_types WHERE bar_id = ?', [id]);
+            bar.types = types.map(t => t.type);
+            bars.push(bar);
+        }
+    }
+    res.json(bars);
+});
+
 router.get('/bars/:id/photos', async (req, res) => {
     const { id } = req.params;
     try {
@@ -124,7 +140,15 @@ router.get('/bars/search-external/bars', async (req, res) => {
     const q = req.query.q;
     if (!q) return res.status(400).json({ error: 'Mangler søgeord' });
     const results = await searchBarByName(q);
-    res.json(results);
+
+    const filtered = results.filter(bar => {
+        const addr = bar.formatted_address || bar.vicinity || '';
+        const match = addr.match(/\b(\d{4})\b/);
+        if (!match) return false;
+        const zip = parseInt(match[1], 10);
+        return zip >= 1000 && zip <= 3000;
+    });
+    res.json(filtered);
 });
 
 router.post('/bars', async (req, res) => {
@@ -174,15 +198,15 @@ router.post('/bars/ratings', async (req, res) => {
     }
 
     try {
-        const bar = await db.get('SELECT rating, user_ratings_total FROM bars WHERE id = ?', [barId]);
+        const bar = await db.get('SELECT bartobar_rating, bartobar_votes FROM bars WHERE id = ?', [barId]);
         if (!bar) return res.status(404).json({ error: 'Bar ikke fundet' });
 
-        const oldAvg = bar.rating || 0;
-        const oldCount = bar.user_ratings_total || 0;
+        const oldAvg = bar.bartobar_rating || 0;
+        const oldCount = bar.bartobar_votes || 0;
         const newCount = oldCount + 1;
         const newAvg = Math.round((((oldAvg * oldCount) + Number(rating)) / newCount) * 10) / 10;
 
-        await db.run('UPDATE bars SET rating = ?, user_ratings_total = ? WHERE id = ?', [newAvg, newCount, barId]);
+        await db.run('UPDATE bars SET bartobar_rating = ?, bartobar_votes = ? WHERE id = ?', [newAvg, newCount, barId]);
         
         req.app.get('io').to(`bar-${barId}`).emit('newRating', {
             barId,

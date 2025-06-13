@@ -20,10 +20,6 @@ fetch(`/bars/${barId}`)
 
     document.getElementById('barName').textContent = bar.name || 'Ukendt navn';
 
-   
-    document.getElementById('ratingen').textContent = 
-    `Rating: ${bar.rating || 'Ingen'} (${bar.user_ratings_total || 0} anmeldelser)`;
-
     document.getElementById('barTypes').textContent = 'Hvad kan de tilbyde: ' +
     `${Array.isArray(bar.types) ? bar.types.join(', ') : (bar.types || '')}`;
 

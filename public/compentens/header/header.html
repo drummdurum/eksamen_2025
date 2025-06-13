@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="../../pages/compentens/asset/image/friMærke.png">
+    <link rel="icon" href="../../compentens/image/icon.png" type="image/png" class="h-10 w-auto mr-3 rounded-lg">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="../../compentens/asset/css/header/buttons.css">
@@ -18,8 +18,10 @@
 </head>
 <body class="bg-gradient-to-r via-green-700 from-black to-green-900 min-h-screen text-white">
  <nav class="flex flex-row items-center justify-between p-4 bg-gray-800 gap-4 w-full">
-  <h1 class="text-xl font-bold text-left">Hvilken bar skal du på?</h1>
-  <!-- Mobil burger-menu -->
+  <div class="flex flex-row items-center gap-3">
+      <img src="../../compentens/image/icon.png" alt="Logo" class="h-10 w-auto mr-3 rounded-lg">
+      <h1 class="text-xl font-bold text-left">Hvilken bar skal du på?</h1>
+  </div>
   <div class="sm:hidden relative">
     <button id="menuToggle" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">
       ☰
@@ -30,9 +32,6 @@
   </button>
   <button onclick="window.location.href='/allBar'" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 transition">
     <span>🍻</span> Se alle bare
-  </button>
-  <button onclick="window.location.href='/addBar'" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 transition">
-    <span>➕</span> Ny Bar?
   </button>
   <button onclick="window.location.href='/tema'" class="flex items-center gap-2 px-5 py-3 hover:bg-green-700/80 transition">
     <span>🎭</span> Tema til barcrawl
@@ -60,7 +59,6 @@
     <div>
       <button onclick="window.location.href='/'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Forsiden</button>
       <button onclick="window.location.href='/allBar'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Se alle bare</button>
-      <button onclick="window.location.href='/addBar'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Ny Bar?</button>
       <button onclick="window.location.href='/tema'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Tema til barcrawl</button>
       <button onclick="window.location.href='/makesRoutes'" class="px-3 py-1 bg-green-600 rounded hover:bg-green-700">Lav din egen route</button>
       <div class="relative inline-block">
@@ -71,7 +69,7 @@
     <!-- Profil-menu beholdes som før -->
     <div class="relative inline-block text-left">
       <button id="profileMenuBtn" class="flex items-center px-3 py-1 bg-green-600 rounded hover:bg-green-700 focus:outline-none">
-        <!-- SVG ... -->
+        👤
       </button>
       <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white rounded shadow-lg z-50 text-black">
         <a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Profil</a>

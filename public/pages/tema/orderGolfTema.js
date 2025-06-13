@@ -1,109 +1,127 @@
-const personsContainer = document.getElementById('personsContainer');
-const addPersonBtn = document.getElementById('addPersonBtn');
-let personCount = 0;
+const outfitTypes = {
+  golf: {
+    title: "Køb Golf-outfit",
+    addLabel: "+ Tilføj person",
+    itemLabel: idx => `Person ${idx + 1}`,
+    fields: [
+      { name: "size", label: "Størrelse", type: "select", options: ["S", "M", "L", "XL"] },
+      { name: "color", label: "Farve", type: "select", options: ["green skjorte", "white skjorte", "black skjorte"] },
+      { name: "hat", label: "Hat", type: "checkbox" },
+      { name: "glove", label: "Golfhandske", type: "checkbox" },
+      { name: "pants", label: "Bukser", type: "checkbox" },
+      { name: "skirt", label: "Nederdel", type: "checkbox" }
+    ]
+  },
+  bodega: {
+    title: "Køb Bodega-vest",
+    addLabel: "+ Tilføj vest",
+    itemLabel: idx => `Vest ${idx + 1}`,
+    fields: [
+      { name: "size", label: "Størrelse", type: "select", options: ["S", "M", "L", "XL"] },
+      { name: "color", label: "Farve", type: "select", options: ["sort vest", "grøn vest"] }
+    ]
+  }
+};
+
+let currentType = null;
 let userId = null;
 
-function createPersonFields(idx) {
+const outfitModal = document.getElementById('outfitModal');
+const outfitForm = document.getElementById('outfitForm');
+const outfitModalTitle = document.getElementById('outfitModalTitle');
+const outfitPersonsContainer = document.getElementById('outfitPersonsContainer');
+const addOutfitPersonBtn = document.getElementById('addOutfitPersonBtn');
+const cancelOutfitBtn = document.getElementById('cancelOutfit');
+
+function createOutfitFields(idx, type) {
+  const config = outfitTypes[type];
   const div = document.createElement('div');
   div.className = "border border-gray-700 rounded p-3 flex flex-col gap-2 bg-gray-700";
   div.innerHTML = `
     <div class="flex justify-between items-center">
-      <span class="font-semibold text-white">Person ${idx + 1}</span>
-      <button type="button" class="removePersonBtn text-red-400 hover:text-red-600 text-lg" title="Fjern person">&times;</button>
+      <span class="font-semibold text-white">${config.itemLabel(idx)}</span>
+      <button type="button" class="removeOutfitPersonBtn text-red-400 hover:text-red-600 text-lg" title="Fjern">&times;</button>
     </div>
-    <label class="text-gray-200">Størrelse:
-      <select name="size" class="w-full p-2 rounded bg-gray-800 text-white border border-gray-600">
-        <option value="S">Small</option>
-        <option value="M">Medium</option>
-        <option value="L">Large</option>
-        <option value="XL">X-Large</option>
-      </select>
-    </label>
-    <label class="text-gray-200">Farve:
-      <select name="color" class="w-full p-2 rounded bg-gray-800 text-white border border-gray-600">
-        <option value="green">Grøn</option>
-        <option value="white">Hvid</option>
-        <option value="black">Sort</option>
-      </select>
-    </label>
-    <div class="flex gap-4 flex-wrap text-gray-200">
-      <label><input type="checkbox" name="hat" class="mr-1"> Hat</label>
-      <label><input type="checkbox" name="glove" class="mr-1"> Golfhandske</label>
-      <label><input type="checkbox" name="pants" class="mr-1"> Bukser</label>
-      <label><input type="checkbox" name="skirt" class="mr-1"> Nederdel</label>
-    </div>
+    ${config.fields.map(field => {
+      if (field.type === "select") {
+        return `<label class="text-gray-200">${field.label}:
+          <select name="${field.name}" class="w-full p-2 rounded bg-gray-800 text-white border border-gray-600">
+            ${field.options.map(opt => `<option value="${opt}">${opt.charAt(0).toUpperCase() + opt.slice(1)}</option>`).join('')}
+          </select>
+        </label>`;
+      }
+      if (field.type === "checkbox") {
+        return `<label class="text-gray-200"><input type="checkbox" name="${field.name}" class="mr-1"> ${field.label}</label>`;
+      }
+      return '';
+    }).join('')}
   `;
-  // Fjern person
-  div.querySelector('.removePersonBtn').onclick = () => {
+  div.querySelector('.removeOutfitPersonBtn').onclick = () => {
     div.remove();
-    updatePersonLabels();
+    updateOutfitPersonLabels(type);
   };
   return div;
 }
 
-function updatePersonLabels() {
-  personsContainer.querySelectorAll('span.font-semibold').forEach((el, idx) => {
-    el.textContent = `Person ${idx + 1}`;
+function updateOutfitPersonLabels(type) {
+  const config = outfitTypes[type];
+  outfitPersonsContainer.querySelectorAll('span.font-semibold').forEach((el, idx) => {
+    el.textContent = config.itemLabel(idx);
   });
 }
 
-addPersonBtn.onclick = () => {
-  personsContainer.appendChild(createPersonFields(personsContainer.children.length));
-  updatePersonLabels();
+
+function openOutfitModal(type) {
+  currentType = type;
+  outfitModalTitle.textContent = outfitTypes[type].title;
+  addOutfitPersonBtn.textContent = outfitTypes[type].addLabel;
+  outfitPersonsContainer.innerHTML = '';
+  outfitPersonsContainer.appendChild(createOutfitFields(0, type));
+  outfitModal.classList.remove('hidden');
+}
+
+addOutfitPersonBtn.onclick = () => {
+  if (!currentType) return;
+  outfitPersonsContainer.appendChild(createOutfitFields(outfitPersonsContainer.children.length, currentType));
+  updateOutfitPersonLabels(currentType);
 };
 
-addPersonBtn.onclick();
 
-document.getElementById('cancelOutfit').onclick = () => {
-  document.getElementById('outfitModal').classList.add('hidden');
-  personsContainer.innerHTML = '';
-  addPersonBtn.onclick();
+cancelOutfitBtn.onclick = () => {
+  outfitModal.classList.add('hidden');
+  outfitPersonsContainer.innerHTML = '';
+  currentType = null;
 };
 
-document.getElementById('outfitForm').onsubmit = (e) => {
+
+document.getElementById('outfits').onclick = () => openOutfitModal('golf');
+document.getElementById('BodegaOutfits').onclick = () => openOutfitModal('bodega');
+
+
+outfitForm.onsubmit = async (e) => {
   e.preventDefault();
-  const persons = [];
-  personsContainer.querySelectorAll('div.border').forEach(div => {
-    const size = div.querySelector('select[name="size"]').value;
-    const color = div.querySelector('select[name="color"]').value;
-    const hat = div.querySelector('input[name="hat"]').checked;
-    const glove = div.querySelector('input[name="glove"]').checked;
-    const pants = div.querySelector('input[name="pants"]').checked;
-    const skirt = div.querySelector('input[name="skirt"]').checked;
-    persons.push({ size, color, hat, glove, pants, skirt });
-  });
-  // Her kan du sende persons til backend eller vise en besked
-  alert(JSON.stringify(persons, null, 2));
-  document.getElementById('outfitModal').classList.add('hidden');
-  personsContainer.innerHTML = '';
-  addPersonBtn.onclick();
-};
-
-document.getElementById('outfits').addEventListener('click', () => {
-  document.getElementById('outfitModal').classList.remove('hidden');
-});
-
-document.getElementById('outfitForm').onsubmit = async (e) => {
-  e.preventDefault();
-  const persons = [];
-  personsContainer.querySelectorAll('div.border').forEach(div => {
-    const size = div.querySelector('select[name="size"]').value;
-    const color = div.querySelector('select[name="color"]').value;
-    const hat = div.querySelector('input[name="hat"]').checked;
-    const glove = div.querySelector('input[name="glove"]').checked;
-    const pants = div.querySelector('input[name="pants"]').checked;
-    const skirt = div.querySelector('input[name="skirt"]').checked;
-    persons.push({ size, color, hat, glove, pants, skirt });
+  const config = outfitTypes[currentType];
+  const items = [];
+  outfitPersonsContainer.querySelectorAll('div.border').forEach(div => {
+    const item = {};
+    config.fields.forEach(field => {
+      if (field.type === "select") {
+        item[field.name] = div.querySelector(`select[name="${field.name}"]`).value;
+      } else if (field.type === "checkbox") {
+        item[field.name] = div.querySelector(`input[name="${field.name}"]`).checked;
+      }
+    });
+    item.type = currentType;
+    items.push(item);
   });
 
   if (!userId) {
     try {
-     const res = await fetch('/me', { credentials: 'include' });
-        if (res.ok) {
+      const res = await fetch('/me', { credentials: 'include' });
+      if (res.ok) {
         const me = await res.json();
-        console.log('me:', me); // Se hvad du faktisk får!
         userId = me.user.userId;
-        }
+      }
     } catch {}
   }
 
@@ -112,12 +130,20 @@ document.getElementById('outfitForm').onsubmit = async (e) => {
     return;
   }
 
-    const cartKey = `Cart_${userId}`;
-    const oldCart = JSON.parse(localStorage.getItem(cartKey) || '[]');
-    const newCart = oldCart.concat(persons);
-    localStorage.setItem(cartKey, JSON.stringify(newCart));
-    toastr.success("Din kurv er gemt!");
-    document.getElementById('outfitModal').classList.add('hidden');
-    personsContainer.innerHTML = '';
-    addPersonBtn.onclick();
+  const cartKey = `Cart_${userId}`;
+  const oldCart = JSON.parse(localStorage.getItem(cartKey) || '[]');
+  const newCart = oldCart.concat(items);
+  localStorage.setItem(cartKey, JSON.stringify(newCart));
+  toastr.success("Din kurv er opdateret!");
+  outfitModal.classList.add('hidden');
+  outfitPersonsContainer.innerHTML = '';
+  currentType = null;
 };
+
+document.getElementById('BodegaRoute').onclick = function() {
+  const barIds = this.dataset.barIds;
+  if (barIds) {
+    window.location.href = `/makesRoutes?bars=${barIds}`;
+  }
+};
+

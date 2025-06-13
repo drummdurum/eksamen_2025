@@ -10,15 +10,12 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 io.on("connection", (socket) => {
-    console.log("A client connected", socket.id);
 
     socket.on("joinBar", (barId) => {
     socket.join(`bar-${barId}`);
-    console.log(`Client ${socket.id} joined room bar-${barId}`);
     });
     
     socket.on("disconnect", () => {
-        console.log("A client disconnected", socket.id);
     });
 });
 
@@ -66,6 +63,8 @@ app.use(routesRouter);
 import mustTryRouter from './serverAPI/routes/mustTryRouter.js';
 app.use(mustTryRouter);
 
+import orderRouter from './serverAPI/routes/orderRouter.js';
+app.use(orderRouter);
 
 const PORT = 8080;
 server.listen(PORT, () => {

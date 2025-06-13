@@ -4,7 +4,6 @@ import db from './../../database/connection.js';
 const router = Routes();
 
 import authMiddlewareInfoSide from '../middleware/authInfoSide.js';
-
 router.put('/newType', authMiddlewareInfoSide, async (req, res) => {
     const { type, barId } = req.body;
 
@@ -12,6 +11,14 @@ router.put('/newType', authMiddlewareInfoSide, async (req, res) => {
         return res.status(400).json({ error: 'Type is required' });
     }
     try {
+        const exists = await db.get(
+            'SELECT 1 FROM bar_types WHERE bar_id = ? AND type = ?',
+            [barId, type]
+        );
+        if (exists) {
+            return res.status(409).json({ error: `Baren har allerede typen "${type}"` });
+        }
+
         await db.run(
             'INSERT INTO bar_types (bar_id, type) VALUES (?, ?)',
             [barId, type]

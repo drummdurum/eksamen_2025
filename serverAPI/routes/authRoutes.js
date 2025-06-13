@@ -15,6 +15,26 @@ router.get('/me', (req, res) => {
   }
 });
 
+router.get('/meInfo', async (req, res) => {
+  if (req.session && req.session.user && req.session.user.userId) {
+    try {
+      const user = await db.get(
+        `SELECT id, name, email FROM users WHERE id = ?`,
+        [req.session.user.userId]
+      );
+      if (user) {
+        res.json({ user });
+      } else {
+        res.status(404).json({ user: null });
+      }
+    } catch (err) {
+      res.status(500).json({ error: "Serverfejl" });
+    }
+  } else {
+    res.status(401).json({ user: null });
+  }
+});
+
 
 router.post('/loginSent', async (req, res) => {
     const { username, password } = req.body;

@@ -226,3 +226,23 @@ function filterBarsByTypes(bars) {
                (!activityType || types.includes(activityType.toLowerCase()));
     });
 }
+
+const params = new URLSearchParams(window.location.search);
+const barsParam = params.get('bars');
+if (barsParam) {
+  const barIds = barsParam.split(',');
+  fetch(`/bars/by-ids/finds?ids=${barIds.join(',')}`)
+    .then(res => res.json())
+    .then(bars => {
+      bars.forEach(bar => {
+        if (!selectedBars.some(b => b.barId === bar.id)) {
+          selectedBars.push({
+            name: bar.name,
+            address: bar.vicinity || bar.formatted_address || '',
+            barId: bar.id
+          });
+        }
+      });
+      updateRouteOnMap();
+    });
+}

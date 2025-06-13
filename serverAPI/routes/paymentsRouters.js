@@ -12,7 +12,6 @@ const router = Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 
-// 🎯 Raw router til webhook
 export const webhookRouter = Router();
 
 webhookRouter.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
@@ -48,21 +47,17 @@ webhookRouter.post('/webhook', bodyParser.raw({ type: 'application/json' }), asy
       if (result.rows.length > 0) {
         const order = result.rows[0];
         if (order.status === 'paid') {
-          console.log('⏩ Ordre allerede betalt – springer over');
           return res.status(200).send('Allerede behandlet');
         }
 
-        // Opdater status til paid
         await pool.query(
           'UPDATE orders SET status = $1 WHERE stripe_session_id = $2',
           ['paid', sessionId]
         );
 
-        console.log('🔁 Ordre opdateret til paid');
         return res.status(200).send('Opdateret');
       }
 
-      // 🆕 Ny ordre – indsæt med paid status
       await pool.query(
         `INSERT INTO orders (user_id, name, address, zip, city, email, order_data, total_price, stripe_session_id, status)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
@@ -77,8 +72,6 @@ webhookRouter.post('/webhook', bodyParser.raw({ type: 'application/json' }), asy
 
       await sendMail(email, "Din BarToBar ordre", mailText);
 
-      console.log('✅ Ordre gemt og mail sendt');
-
     } catch (err) {
       console.error('❌ DB-fejl eller mail-fejl:', err.message);
       return res.status(500).send('Intern fejl');
@@ -88,8 +81,6 @@ webhookRouter.post('/webhook', bodyParser.raw({ type: 'application/json' }), asy
   res.status(200).send('✅ Webhook modtaget');
 });
 
-
-// 🎯 Raw router til webhook
 export const paymentsRouter = Router();
 
 paymentsRouter.post('/create-checkout-session', async (req, res) => {

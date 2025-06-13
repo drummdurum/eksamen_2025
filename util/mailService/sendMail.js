@@ -3,7 +3,6 @@ import nodemailer from 'nodemailer';
 
 
 export async function sendMail(email, subject, text) {
-    console.log('GmailserviceAppKode:', process.env.GmailserviceAppKode);
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -18,8 +17,6 @@ export async function sendMail(email, subject, text) {
         subject: subject, 
         text: text,       
     });
-
-    console.log("E-mail sendt! ID:", info.messageId);
 }
 
 export default sendMail;

@@ -31,14 +31,12 @@ router.put('/user', async (req, res) => {
   const { username, password, email } = req.body;
 
   try {
-    // Tjek om brugeren er logget ind
     if (!req.session || !req.session.user || !req.session.user.userId) {
       return res.status(401).send({ message: 'Unauthorized: User not logged in' });
     }
 
     const userId = req.session.user.userId;
 
-    // Tjek om email allerede bruges af en anden bruger
     const existingEmail = await db.get(`
       SELECT * FROM users WHERE email = ? AND id != ?
     `, [email, userId]);
@@ -47,7 +45,6 @@ router.put('/user', async (req, res) => {
       return res.status(400).send({ message: 'Email bliver allerede brugt af en anden bruger' });
     }
 
-    // Tjek om brugernavn allerede bruges af en anden bruger
     const existingUser = await db.get(`
       SELECT * FROM users WHERE name = ? AND id != ?
     `, [username, userId]);
@@ -56,14 +53,12 @@ router.put('/user', async (req, res) => {
       return res.status(400).send({ message: 'Brugernavnet er allerede taget af en anden bruger' });
     }
 
-    // Hash password, hvis det opdateres
     let hashedPassword = null;
     if (password) {
       const saltRounds = 10;
       hashedPassword = bcrypt.hashSync(password, saltRounds);
     }
 
-    // Opdater brugerens data i databasen
     if (hashedPassword) {
       await db.run(`
         UPDATE users
@@ -78,7 +73,6 @@ router.put('/user', async (req, res) => {
       `, [username, email, userId]);
     }
 
-    // Opdater sessionen med det nye brugernavn
     req.session.user.username = username;
 
     res.status(200).send({ message: 'Brugeroplysninger opdateret med succes' });

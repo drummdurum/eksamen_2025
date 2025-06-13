@@ -16,7 +16,6 @@ document.querySelector('.update-profil').addEventListener('submit', async functi
 
     console.log(data);
 
-  
     if (!data.username || data.username.length < 3) {
         toastr.error('Update: Brugernavn skal være mindst 3 tegn!');
         return;
@@ -27,23 +26,27 @@ document.querySelector('.update-profil').addEventListener('submit', async functi
         return;
     }
 
-    if (!data.password || data.password.length < 4) {
-        toastr.error('Update: Password skal være mindst 4 tegn langt!');
-        return;
-    }
-
-    if (!/[A-Z]/.test(data.password)) {
-        toastr.error('Update: Password skal indeholde mindst ét stort bogstav!');
-        return;
-    }
-
-    if (!/[0-9]/.test(data.password)) {
-        toastr.error('Update: Password skal indeholde mindst ét tal!');
-        return;
-    }
-    if(data.password !== data['confirm-password']){
-        toastr.error('Update: Password og bekræftelse skal være ens!');
-        return;
+    if (data.password) {
+        if (data.password.length < 4) {
+            toastr.error('Update: Password skal være mindst 4 tegn langt!');
+            return;
+        }
+        if (!/[A-Z]/.test(data.password)) {
+            toastr.error('Update: Password skal indeholde mindst ét stort bogstav!');
+            return;
+        }
+        if (!/[0-9]/.test(data.password)) {
+            toastr.error('Update: Password skal indeholde mindst ét tal!');
+            return;
+        }
+        if(data.password !== data['confirm-password']){
+            toastr.error('Update: Password og bekræftelse skal være ens!');
+            return;
+        }
+    } else {
+       
+        delete data.password;
+        delete data['confirm-password'];
     }
 
     if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
@@ -63,17 +66,14 @@ document.querySelector('.update-profil').addEventListener('submit', async functi
         if (response.ok) {
             toastr.success(result.message);
 
-
             setTimeout(() => {
                 window.location.href = '/profile';
             }, 2000); 
         } else {
-            
             toastr.error(result.message);
         }
     } catch (error) {
         console.error('Fejl under oprettelse af bruger:', error);
         toastr.error('Noget gik galt. Prøv igen senere.');
     }
-
 });

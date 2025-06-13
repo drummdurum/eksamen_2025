@@ -17,12 +17,6 @@ router.get('/login', async (req, res) => {
   res.send(loginPage.replace('{{message}}', message || '')); 
 });
 
-import {adminpageNyBar} from '../../util/pages.js';
-
-router.get('/addBar', adminMiddleware, async (req, res) => {
-  res.send(adminpageNyBar);
-});
-
 import {allBars} from '../../util/pages.js';
 router.get('/allBar', async (req, res) => {
   res.send(allBars);
@@ -71,6 +65,11 @@ router.get('/success', async (req, res) => {
 import {error} from '../../util/pages.js';
 router.get('/cancel', async (req, res) => {
   res.send(error); 
+});
+
+import {orders} from '../../util/pages.js';
+router.get('/orders', adminMiddleware, async (req, res) => {
+  res.send(orders); 
 });
 
 export default router;

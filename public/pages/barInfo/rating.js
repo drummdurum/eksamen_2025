@@ -1,9 +1,26 @@
 const starRating = document.getElementById('starRating');
 const ratingMessage = document.getElementById('ratingMessage');
-const dropdownMenuMood = document.getElementById('dropdownMenuMood');
-let selectedRating = 0;
 
+let selectedRating = 0;
 let hasVoted = localStorage.getItem('hasVoted_' + barId) === 'true';
+
+async function loadRatings() {
+  try {
+    const res = await fetch(`/bars/${barId}`);
+    if (res.ok) {
+      const bar = await res.json();
+      document.getElementById('googleRatingText').textContent = bar.rating ? `${bar.rating.toFixed(1)} / 5` : 'Ingen';
+      document.getElementById('googleVotesText').textContent = bar.user_ratings_total ? `(${bar.user_ratings_total} stemmer)` : '';
+      document.getElementById('avgRatingText').textContent =
+        bar.bartobar_rating && bar.bartobar_votes > 0 ? bar.bartobar_rating.toFixed(1) : '0.0';
+      document.getElementById('totalVotesText').textContent =
+        bar.bartobar_votes > 0 ? `(${bar.bartobar_votes} stemmer)` : '(0 stemmer)';
+    }
+  } catch (err) {
+    
+  }
+}
+loadRatings();
 
 if (starRating) {
   starRating.querySelectorAll('span').forEach(star => {
@@ -18,14 +35,13 @@ if (starRating) {
     });
     star.addEventListener('click', async () => {
       if (hasVoted) {
-        toastr.warning('Du har allerede stemt på denne bar!')
-        return; 
+        toastr.warning('Du har allerede stemt på denne bar!');
+        return;
       }
       selectedRating = parseInt(star.dataset.star);
       highlightStars(selectedRating);
       ratingMessage.textContent = `Du har givet ${selectedRating} stjerne${selectedRating > 1 ? 'r' : ''}!`;
 
-      const barId = localStorage.getItem('selectedBarId');
       if (!barId) {
         toastr.error('Bar-id ikke fundet!');
         return;
@@ -39,9 +55,10 @@ if (starRating) {
         });
         const data = await res.json();
         if (res.ok) {
-            toastr.success(data.message || 'Tak for din stemme!');
-            hasVoted = true; 
-            localStorage.setItem('hasVoted_' + barId, 'true');
+          toastr.success(data.message || 'Tak for din stemme!');
+          hasVoted = true;
+          localStorage.setItem('hasVoted_' + barId, 'true');
+          updateAverageUI(data.newAvg, data.newCount);
         } else {
           toastr.error(data.error || 'Noget gik galt');
         }
@@ -59,18 +76,15 @@ function highlightStars(rating) {
 }
 
 const socket = io();
-
-
 socket.emit('joinBar', barId);
 
-socket.on('newRating', ({newAvg, newCount}) => {
+socket.on('newRating', ({ newAvg, newCount }) => {
   updateAverageUI(newAvg, newCount);
 });
 
 function updateAverageUI(avg, count) {
   const avgSpan = document.getElementById('avgRatingText');
   const countSpan = document.getElementById('totalVotesText');
-
   if (avgSpan) avgSpan.textContent = avg.toFixed(1);
-  if (countSpan) countSpan.textContent = count;
+  if (countSpan) countSpan.textContent = `(${count} stemmer)`;
 }
