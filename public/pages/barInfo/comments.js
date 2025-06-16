@@ -7,7 +7,6 @@ const commentsUl = document.getElementById('commentsUl');
 
 let username = null;
 
-// Hent brugernavn fra backend
 async function fetchUsername() {
   try {
     const res = await fetch('/username');
@@ -22,7 +21,6 @@ async function fetchUsername() {
   }
 }
 
-// Åbn kommentar-popup kun hvis logget ind
 openBtn.addEventListener('click', async () => {
   await fetchUsername();
   if (!username) {
@@ -33,12 +31,11 @@ openBtn.addEventListener('click', async () => {
   modalTextarea.value = '';
 });
 
-// Luk popup
 closeBtn.addEventListener('click', () => {
   modal.classList.add('hidden');
 });
 
-// Indlæs kommentarer
+
 async function loadComments() {
   const res = await fetch(`/bars/${barId}/comments`);
   const comments = await res.json();
@@ -59,7 +56,7 @@ async function loadComments() {
 
 loadComments();
 
-// Send kommentar
+
 sendBtn.addEventListener('click', async () => {
   const text = modalTextarea.value.trim();
   if (!text || !username) return;
@@ -78,7 +75,6 @@ sendBtn.addEventListener('click', async () => {
 
     modal.classList.add('hidden');
     modalTextarea.value = '';
-    // Ikke brug loadComments her – socketen opdaterer listen for os
   } catch (err) {
     toastr.error('Fejl: Kunne ikke sende kommentaren.');
   }

@@ -40,4 +40,3 @@ const ordersPage = readPage('./public/pages/orders/orders.html')
 export const orders = contructPage(ordersPage, {title: 'Ordrer'});
 
 
-

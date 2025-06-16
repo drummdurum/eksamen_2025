@@ -3,9 +3,20 @@ import { compare } from 'bcrypt';
 import bcrypt from 'bcryptjs';
 import db from './../../database/connection.js'; 
 import {sendMail} from './../../util/mailService/sendMail.js';
-
+import rateLimit from 'express-rate-limit'; 
 const router = Router();
 
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5, 
+  message: { message: 'For mange loginforsøg. Prøv igen om 15 minutter.' }
+});
+
+const signupLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3, 
+  message: { message: 'For mange oprettelser. Prøv igen senere.' }
+});
 
 router.get('/me', (req, res) => {
   if (req.session && req.session.user) {
@@ -36,7 +47,7 @@ router.get('/meInfo', async (req, res) => {
 });
 
 
-router.post('/loginSent', async (req, res) => {
+router.post('/loginSent', loginLimiter, async (req, res) => {
     const { username, password } = req.body;
 
     try {
@@ -95,7 +106,7 @@ router.get('/logud', (req, res) => {
     });
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', signupLimiter, async (req, res) => {
     const { username, password, email } = req.body;
 
     try {
