@@ -20,7 +20,22 @@ router.get('/mustTrys', async (req, res) => {
 router.post('/mustTrys', async (req, res) => {
     const userId = req.session.user?.userId;
     const { barId } = req.body;
-    if (!userId || !barId) return res.status(400).json({ error: "Mangler data" });
+    
+    // Debug logging
+    console.log('MustTry POST request:', {
+        userId: userId,
+        barId: barId,
+        body: req.body,
+        session: req.session?.user ? 'exists' : 'missing'
+    });
+    
+    if (!userId || !barId) {
+        return res.status(400).json({ 
+            error: "Mangler data",
+            debug: { userId: !!userId, barId: !!barId, receivedBody: req.body }
+        });
+    }
+    
     try {
         await db.run(
             `INSERT INTO must_try (user_id, bar_id) VALUES (?, ?)`,
@@ -28,6 +43,7 @@ router.post('/mustTrys', async (req, res) => {
         );
         res.json({ success: true });
     } catch (err) {
+        console.error('MustTry database error:', err);
         if (err.code === 'SQLITE_CONSTRAINT') {
             res.status(409).json({ error: "Bar allerede på listen" });
         } else {

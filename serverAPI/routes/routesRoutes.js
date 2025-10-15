@@ -52,7 +52,21 @@ router.post('/routes/:routeId/add-bar', async (req, res) => {
     const userId = req.session.user?.userId;
     const { barId } = req.body;
     const routeId = req.params.routeId;
+    
+    // Debug logging
+    console.log('Routes add-bar POST request:', {
+        userId: userId,
+        barId: barId,
+        routeId: routeId,
+        body: req.body,
+        session: req.session?.user ? 'exists' : 'missing'
+    });
+    
     if (!userId) return res.status(401).json({ error: "Ikke logget ind" });
+    if (!barId) return res.status(400).json({ 
+        error: "Mangler bar data", 
+        debug: { barId: !!barId, receivedBody: req.body }
+    });
     
     const route = await db.get('SELECT id FROM routes WHERE id = ? AND user_id = ?', [routeId, userId]);
     if (!route) return res.status(404).json({ error: "Rute ikke fundet" });

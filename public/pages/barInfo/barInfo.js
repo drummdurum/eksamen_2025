@@ -36,7 +36,27 @@ $(document).ready(function () {
     }
 });
 
-const barId = localStorage.getItem('selectedBarId');
+// Get barId from localStorage or URL parameter
+let barId = localStorage.getItem('selectedBarId');
+if (!barId) {
+    const urlParams = new URLSearchParams(window.location.search);
+    barId = urlParams.get('barId') || urlParams.get('id');
+    if (barId) {
+        localStorage.setItem('selectedBarId', barId);
+    }
+}
+
+console.log('BarInfo debug:', {
+    barId: barId,
+    localStorage: localStorage.getItem('selectedBarId'),
+    urlParams: window.location.search
+});
+
+if (!barId) {
+    toastr.error('Ingen bar ID fundet!');
+    console.error('No barId found in localStorage or URL');
+}
+
 fetch(`/bars/${barId}`)
   .then(res => res.json())
   .then(bar => {

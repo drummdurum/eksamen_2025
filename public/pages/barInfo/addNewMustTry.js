@@ -7,22 +7,32 @@ document.getElementById('mustTryBtn').addEventListener('click', async () => {
     }
 
     const barId = localStorage.getItem('selectedBarId');
+    console.log('MustTry debug:', {
+        barId: barId,
+        localStorage: localStorage.getItem('selectedBarId'),
+        allLocalStorage: { ...localStorage }
+    });
+    
     if (!barId) {
-        toastr.error('BarId mangler!');
+        toastr.error('BarId mangler! Debug: ' + barId);
         return;
     }
+
+    const requestData = { barId };
+    console.log('Sending mustTry request:', requestData);
 
     const res = await fetch('/mustTrys', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ barId })
+        body: JSON.stringify(requestData)
     });
 
     if (res.ok) {
         toastr.success('Bar tilføjet til Must Try!');
     } else {
         const data = await res.json();
+        console.error('MustTry error response:', data);
         toastr.error(data.error || 'Kunne ikke tilføje baren.');
     }
 });
