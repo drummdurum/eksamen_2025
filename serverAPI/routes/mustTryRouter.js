@@ -4,8 +4,20 @@ const router = Router();
 
 
 router.get('/mustTrys', async (req, res) => {
-    const userId = req.session.user?.userId;
+    // Robust userId retrieval
+    let userId = req.session?.user?.userId;
+    
+    if (!userId && req.session?.user?.username) {
+        try {
+            const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+            userId = user?.id;
+        } catch (err) {
+            console.error('Error getting userId from username in GET mustTrys:', err);
+        }
+    }
+    
     if (!userId) return res.status(401).json({ error: "Ikke logget ind" });
+    
     const bars = await db.all(
         `SELECT b.id, b.name, b.vicinity
          FROM must_try mt
@@ -73,9 +85,21 @@ router.post('/mustTrys', async (req, res) => {
 });
 
 router.delete('/mustTrys/:barId', async (req, res) => {
-    const userId = req.session.user?.userId;
+    // Robust userId retrieval
+    let userId = req.session?.user?.userId;
+    
+    if (!userId && req.session?.user?.username) {
+        try {
+            const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+            userId = user?.id;
+        } catch (err) {
+            console.error('Error getting userId from username in DELETE mustTrys:', err);
+        }
+    }
+    
     const barId = req.params.barId;
     if (!userId || !barId) return res.status(400).json({ error: "Mangler data" });
+    
     await db.run(
         `DELETE FROM must_try WHERE user_id = ? AND bar_id = ?`,
         [userId, barId]

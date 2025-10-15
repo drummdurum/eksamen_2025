@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import pool from './../../databasePG/connection.js';
+import db from '../../database/connection.js';
 import sendMail from '../../util/mailService/sendMail.js';
 
 dotenv.config();
@@ -84,7 +85,20 @@ webhookRouter.post('/webhook', bodyParser.raw({ type: 'application/json' }), asy
 export const paymentsRouter = Router();
 
 paymentsRouter.post('/create-checkout-session', async (req, res) => {
-  const user = req.session.user;
+  // Robust user retrieval
+  let user = req.session?.user;
+  
+  if (!user && req.session?.user?.username) {
+      try {
+          const dbUser = await db.get('SELECT id, name, email FROM users WHERE name = ?', [req.session.user.username]);
+          if (dbUser) {
+              user = { userId: dbUser.id, username: dbUser.name, email: dbUser.email };
+          }
+      } catch (err) {
+          console.error('Error getting user from username in payments:', err);
+      }
+  }
+  
   const { name, address, zip, city, email, cart, total } = req.body;
 
   if (!user) return res.status(401).json({ error: 'Bruger ikke logget ind' });

@@ -32,7 +32,18 @@ router.get('/routes', async (req, res) => {
 
 router.get('/routes/:routeId', async (req, res) => {
     try {
-        const userId = req.session.user?.userId;
+        // Robust userId retrieval
+        let userId = req.session?.user?.userId;
+        
+        if (!userId && req.session?.user?.username) {
+            try {
+                const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+                userId = user?.id;
+            } catch (err) {
+                console.error('Error getting userId from username in routes/:routeId:', err);
+            }
+        }
+        
         const routeId = req.params.routeId;
 
         if (!userId) return res.status(401).json({ error: "Ikke logget ind" });
@@ -101,10 +112,21 @@ router.post('/routes/:routeId/add-bar', async (req, res) => {
 
 router.post('/routes', async (req, res) => {
     try {
-        const userId = req.session.user?.userId;
+        // Robust userId retrieval
+        let userId = req.session?.user?.userId;
+        
+        if (!userId && req.session?.user?.username) {
+            try {
+                const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+                userId = user?.id;
+            } catch (err) {
+                console.error('Error getting userId from username in POST /routes:', err);
+            }
+        }
+        
         const { name, bars } = req.body;
 
-        console.log('userId:', userId, 'name:', name, 'bars:', bars);
+        console.log('POST /routes - userId:', userId, 'name:', name, 'bars:', bars);
 
         if (!userId || !name || !Array.isArray(bars) || bars.length === 0) {
             return res.status(400).json({ error: 'Ugyldige data' });
@@ -134,7 +156,18 @@ router.post('/routes', async (req, res) => {
 
 router.delete('/routes/:routeId', async (req, res) => {
     try {
-        const userId = req.session.user?.userId;
+        // Robust userId retrieval
+        let userId = req.session?.user?.userId;
+        
+        if (!userId && req.session?.user?.username) {
+            try {
+                const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+                userId = user?.id;
+            } catch (err) {
+                console.error('Error getting userId from username in DELETE /routes:', err);
+            }
+        }
+        
         const routeId = req.params.routeId;
         if (!userId) return res.status(401).json({ error: "Ikke logget ind" });
 

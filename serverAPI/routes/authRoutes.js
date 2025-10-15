@@ -34,11 +34,23 @@ router.get('/me', (req, res) => {
 });
 
 router.get('/meInfo', async (req, res) => {
-  if (req.session && req.session.user && req.session.user.userId) {
+  // Robust userId retrieval
+  let userId = req.session?.user?.userId;
+  
+  if (!userId && req.session?.user?.username) {
+      try {
+          const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+          userId = user?.id;
+      } catch (err) {
+          console.error('Error getting userId from username in /meInfo:', err);
+      }
+  }
+  
+  if (userId) {
     try {
       const user = await db.get(
         `SELECT id, name, email FROM users WHERE id = ?`,
-        [req.session.user.userId]
+        [userId]
       );
       if (user) {
         res.json({ user });

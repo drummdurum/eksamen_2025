@@ -42,11 +42,21 @@ router.put('/user', async (req, res) => {
   const { username, password, email } = req.body;
 
   try {
-    if (!req.session || !req.session.user || !req.session.user.userId) {
+    // Robust userId retrieval
+    let userId = req.session?.user?.userId;
+    
+    if (!userId && req.session?.user?.username) {
+        try {
+            const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+            userId = user?.id;
+        } catch (err) {
+            console.error('Error getting userId from username in /user PUT:', err);
+        }
+    }
+    
+    if (!userId) {
       return res.status(401).send({ message: 'Unauthorized: User not logged in' });
     }
-
-    const userId = req.session.user.userId;
 
     const existingEmail = await db.get(`
       SELECT * FROM users WHERE email = ? AND id != ?
