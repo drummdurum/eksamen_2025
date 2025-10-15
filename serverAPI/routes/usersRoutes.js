@@ -9,10 +9,21 @@ import db from './../../database/connection.js';
 
 router.get('/username', async (req, res) => {
   try {
-    if (!req.session || !req.session.user || !req.session.user.userId) {
+    // Robust userId retrieval
+    let userId = req.session?.user?.userId;
+    
+    if (!userId && req.session?.user?.username) {
+        try {
+            const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+            userId = user?.id;
+        } catch (err) {
+            console.error('Error getting userId from username in /username:', err);
+        }
+    }
+    
+    if (!userId) {
       return res.status(401).json({ error: 'Unauthorized: User not logged in' });
     }
-    const userId = req.session.user.userId;
 
     const user = await db.get(`SELECT id, name, email FROM users WHERE id = ?`, [userId]);
 

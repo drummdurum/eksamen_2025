@@ -27,13 +27,13 @@ if (process.env.NODE_ENV === 'production' && process.env.PGHOST) {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    name: 'sessionId', // Custom session name
+    name: 'sessionId',
     cookie: { 
-      secure: false,        // Railway handles SSL termination
+      secure: false,        // Keep false even for HTTPS (Railway handles SSL termination)
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: 'lax',
-      domain: undefined     // Let Railway handle domain
+      sameSite: 'none',     // Changed from 'lax' to 'none' for cross-origin
+      domain: undefined
     }
   });
 
@@ -50,12 +50,12 @@ if (process.env.NODE_ENV === 'production' && process.env.PGHOST) {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    name: 'sessionId', // Custom session name
+    name: 'sessionId',
     cookie: { 
       secure: false,
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: 'lax',
+      sameSite: 'lax',     // Keep 'lax' for localhost
       domain: undefined
     }
   });

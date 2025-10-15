@@ -5,7 +5,18 @@ const router = express.Router();
 
 router.get('/routes', async (req, res) => {
     try {
-        const userId = req.session.user?.userId;
+        // Robust userId retrieval
+        let userId = req.session?.user?.userId;
+        
+        if (!userId && req.session?.user?.username) {
+            try {
+                const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+                userId = user?.id;
+            } catch (err) {
+                console.error('Error getting userId from username in routes:', err);
+            }
+        }
+        
         if (!userId) return res.status(401).json({ error: "Ikke logget ind" });
 
         const routes = await db.all(
@@ -14,7 +25,7 @@ router.get('/routes', async (req, res) => {
         );
         res.json(routes);
     } catch (err) {
-        console.error(err);
+        console.error('Routes error:', err);
         res.status(500).json({ error: "Serverfejl" });
     }
 });
@@ -49,7 +60,18 @@ router.get('/routes/:routeId', async (req, res) => {
 });
 
 router.post('/routes/:routeId/add-bar', async (req, res) => {
-    const userId = req.session.user?.userId;
+    // Robust userId retrieval
+    let userId = req.session?.user?.userId;
+    
+    if (!userId && req.session?.user?.username) {
+        try {
+            const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+            userId = user?.id;
+        } catch (err) {
+            console.error('Error getting userId from username in routes add-bar:', err);
+        }
+    }
+    
     const { barId } = req.body;
     const routeId = req.params.routeId;
     

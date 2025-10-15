@@ -14,8 +14,16 @@ if (process.env.NODE_ENV === 'production') {
 
 // CORS configuration for Railway
 app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  
+  // Allow Railway domain and localhost
+  if (origin && (origin.includes('railway.app') || origin.includes('localhost'))) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    res.header('Access-Control-Allow-Origin', '*');
+  }
+  
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma');
   
