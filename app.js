@@ -12,12 +12,53 @@ if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1); // Trust first proxy (Railway)
 }
 
+// CORS configuration for Railway
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
+// Session middleware should be early in the pipeline
+app.use(sessionMiddleware);
+
+// Debug session middleware
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production') {
+    console.log('Session check:', {
+      sessionID: req.sessionID,
+      hasSession: !!req.session,
+      hasUser: !!req.session?.user,
+      cookies: req.headers.cookie ? 'present' : 'missing'
+    });
+  }
+  next();
+});
+
+// Body parsing
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Webhook router (requires raw body, so comes after session but before other routes)
+app.use(webhookRouter);
+
 const server = http.createServer(app);
 
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    credentials: true
+  }
+});
 
 io.on("connection", (socket) => {
-
     socket.on("joinBar", (barId) => {
     socket.join(`bar-${barId}`);
     });
@@ -26,18 +67,10 @@ io.on("connection", (socket) => {
     });
 });
 
-app.use(webhookRouter);
-
-app.use(sessionMiddleware);
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
 app.use(paymentsRouter);
-
 app.use(express.static('public'));
 
-app.use(express.urlencoded({ extended: true }));
-
+// Remove duplicate express.urlencoded - already configured above
 app.set('io', io);
 
 import pagesRouter from './serverAPI/routes/pagesRoutes.js';
