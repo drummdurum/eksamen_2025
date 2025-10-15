@@ -45,7 +45,7 @@ export async function sendMail(email, subject, text) {
             secure: transporterConfig.secure
         });
 
-        let transporter = nodemailer.createTransporter(transporterConfig);
+        let transporter = nodemailer.createTransport(transporterConfig);
 
         console.log('Transporter created, sending email...');
 
