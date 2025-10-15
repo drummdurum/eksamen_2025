@@ -109,6 +109,10 @@ router.get('/logud', (req, res) => {
 router.post('/signup', signupLimiter, async (req, res) => {
     const { username, password, email } = req.body;
 
+    if (username.length<4){
+      res.send("not waild")
+    }
+
     try {
         
         const existingUser = await db.get(`
