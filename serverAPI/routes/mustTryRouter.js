@@ -18,7 +18,19 @@ router.get('/mustTrys', async (req, res) => {
 
 
 router.post('/mustTrys', async (req, res) => {
-    const userId = req.session.user?.userId;
+    // More robust way to get userId
+    let userId = req.session?.user?.userId;
+    
+    // Fallback: if userId is missing, try to get it from database using session user info
+    if (!userId && req.session?.user?.username) {
+        try {
+            const user = await db.get('SELECT id FROM users WHERE name = ?', [req.session.user.username]);
+            userId = user?.id;
+        } catch (err) {
+            console.error('Error getting userId from username:', err);
+        }
+    }
+    
     const { barId } = req.body;
     
     // Debug logging
@@ -26,12 +38,20 @@ router.post('/mustTrys', async (req, res) => {
         userId: userId,
         barId: barId,
         body: req.body,
-        session: req.session?.user ? 'exists' : 'missing'
+        session: req.session?.user ? req.session.user : 'missing',
+        sessionId: req.sessionID
     });
     
-    if (!userId || !barId) {
+    if (!userId) {
+        return res.status(401).json({ 
+            error: "Ikke logget ind",
+            debug: { hasSession: !!req.session, hasUser: !!req.session?.user }
+        });
+    }
+    
+    if (!barId) {
         return res.status(400).json({ 
-            error: "Mangler data",
+            error: "Mangler bar data",
             debug: { userId: !!userId, barId: !!barId, receivedBody: req.body }
         });
     }

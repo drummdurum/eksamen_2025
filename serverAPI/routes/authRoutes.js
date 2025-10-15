@@ -19,6 +19,13 @@ const signupLimiter = rateLimit({
 });
 
 router.get('/me', (req, res) => {
+  console.log('/me endpoint debug:', {
+    hasSession: !!req.session,
+    hasUser: !!req.session?.user,
+    sessionUser: req.session?.user,
+    sessionId: req.sessionID
+  });
+  
   if (req.session && req.session.user) {
     res.json({ user: req.session.user });
   } else {
@@ -67,6 +74,12 @@ router.post('/loginSent', loginLimiter, async (req, res) => {
                     isAdmin: user.isAdmin,
                     userId: user.id,
                 };
+
+                console.log('Login successful, session created:', {
+                    sessionId: req.sessionID,
+                    sessionUser: req.session.user,
+                    userId: user.id
+                });
 
                
                 if (user.isAdmin) {
