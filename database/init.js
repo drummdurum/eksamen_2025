@@ -60,6 +60,37 @@ try {
       );
     `);
 
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS must_try (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        bar_id INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (bar_id) REFERENCES bars(id) ON DELETE CASCADE,
+        UNIQUE(user_id, bar_id)
+      );
+    `);
+
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS routes (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS route_bars (
+        route_id INTEGER NOT NULL,
+        bar_id INTEGER NOT NULL,
+        position INTEGER NOT NULL,
+        PRIMARY KEY (route_id, bar_id),
+        FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE,
+        FOREIGN KEY (bar_id) REFERENCES bars(id) ON DELETE CASCADE
+      );
+    `);
+
   } else {
     // SQLite syntax
     await db.exec(`
@@ -111,6 +142,37 @@ try {
         bar_id INTEGER,
         username TEXT,
         text TEXT,
+        FOREIGN KEY (bar_id) REFERENCES bars(id) ON DELETE CASCADE
+      );
+    `);
+
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS must_try (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        bar_id INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (bar_id) REFERENCES bars(id) ON DELETE CASCADE,
+        UNIQUE(user_id, bar_id)
+      );
+    `);
+
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS routes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS route_bars (
+        route_id INTEGER NOT NULL,
+        bar_id INTEGER NOT NULL,
+        position INTEGER NOT NULL,
+        PRIMARY KEY (route_id, bar_id),
+        FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE,
         FOREIGN KEY (bar_id) REFERENCES bars(id) ON DELETE CASCADE
       );
     `);

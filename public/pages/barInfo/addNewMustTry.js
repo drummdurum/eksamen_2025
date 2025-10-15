@@ -1,5 +1,5 @@
 document.getElementById('mustTryBtn').addEventListener('click', async () => {
-    localStorage.getItem('selectedBarId');
+    const barId = localStorage.getItem('selectedBarId');
     if (!barId) {
         toastr.error('BarId mangler!');
         return;
