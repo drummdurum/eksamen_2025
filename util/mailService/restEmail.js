@@ -9,7 +9,14 @@ export async function sendResetEmail(email, token) {
     const subject = "Nulstilling af adgangskode";
     const text = `Klik på dette link for at nulstille din adgangskode: ${resetLink}`;
 
-    await sendMail(email, subject, text);
+    console.log('SendResetEmail called:', {
+        email: email,
+        resetLink: resetLink,
+        baseUrl: BASE_URL
+    });
+
+    const result = await sendMail(email, subject, text);
+    return result;
 }
 
 export async function validateResetToken(token) {

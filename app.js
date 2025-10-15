@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import sessionMiddleware from './serverSSR/session.js';
 import http from 'http';
