@@ -6,6 +6,12 @@ import { webhookRouter, paymentsRouter } from './serverAPI/routes/paymentsRouter
 import './database/init.js'; // Initialize database tables
 
 const app = express();
+
+// Configure trust proxy for Railway and other reverse proxies
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1); // Trust first proxy (Railway)
+}
+
 const server = http.createServer(app);
 
 const io = new Server(server);
