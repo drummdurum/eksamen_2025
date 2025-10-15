@@ -17,6 +17,9 @@ yarn-error.log*
 users.db
 *.db
 *.sqlite
+*.sqlite3
+database/sessions.db
+database/*.db
 
 # Logs
 logs

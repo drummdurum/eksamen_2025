@@ -3,6 +3,7 @@ import sessionMiddleware from './serverSSR/session.js';
 import http from 'http';
 import { Server } from 'socket.io';
 import { webhookRouter, paymentsRouter } from './serverAPI/routes/paymentsRouters.js';
+import './database/init.js'; // Initialize database tables
 
 const app = express();
 const server = http.createServer(app);
