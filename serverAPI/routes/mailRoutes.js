@@ -29,19 +29,31 @@ routes.post('/sendMailForgottenKode', async (req, res) => {
         const token = await generateResetToken(user.id);
 
         console.log('Token generated, sending email...');
-        const emailResult = await sendResetEmail(email, token);
-
-        console.log('Email processing result:', emailResult);
         
-        if (emailResult && emailResult.method === 'logging_fallback') {
-            console.log('Email sent via fallback method - check server logs for reset link');
+        try {
+            const emailResult = await sendResetEmail(email, token);
+
+            console.log('Email processing result:', emailResult);
+            
+            if (emailResult && emailResult.method === 'logging_fallback') {
+                console.log('Email sent via fallback method - check server logs for reset link');
+                res.status(200).send({ 
+                    message: 'Email service midlertidigt utilgængelig. Kontakt support for at få nulstillet din adgangskode.',
+                    fallback: true
+                });
+            } else {
+                console.log('Email sent successfully to:', email);
+                res.status(200).send({ message: 'Vi har sendt en E-mail til nulstilling af adgangskode, gå in på din mail og tryk på linket' });
+            }
+        } catch (emailError) {
+            console.error('Email sending failed completely:', emailError);
+            
+            // Even if email fails, we can provide the user with a fallback message
             res.status(200).send({ 
-                message: 'Email service midlertidigt utilgængelig. Kontakt support for at få nulstillet din adgangskode.',
-                fallback: true
+                message: 'Anmodning modtaget. Hvis e-mailadressen findes i systemet, vil du modtage en nulstillingsmail. Kontakt support hvis du ikke modtager den.',
+                fallback: true,
+                debug: process.env.NODE_ENV === 'development' ? emailError.message : undefined
             });
-        } else {
-            console.log('Email sent successfully to:', email);
-            res.status(200).send({ message: 'Vi har sendt en E-mail til nulstilling af adgangskode, gå in på din mail og tryk på linket' });
         }
     } catch (error) {
         console.error('Error in sendMailForgottenKode:', error);
