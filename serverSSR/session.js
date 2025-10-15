@@ -28,8 +28,10 @@ if (process.env.NODE_ENV === 'production' && process.env.PGHOST) {
     resave: false,
     saveUninitialized: false,
     cookie: { 
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      secure: false, // Railway handles SSL termination, internal communication is HTTP
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'lax'
     }
   });
 
@@ -48,7 +50,9 @@ if (process.env.NODE_ENV === 'production' && process.env.PGHOST) {
     saveUninitialized: false,
     cookie: { 
       secure: false,
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'lax'
     }
   });
 }

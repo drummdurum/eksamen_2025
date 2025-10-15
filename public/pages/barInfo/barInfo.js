@@ -5,6 +5,30 @@ if (message) {
     toastr.success(decodeURIComponent(message)); 
 }
 
+// Check if user is logged in
+let isUserLoggedIn = false;
+let currentUser = null;
+
+async function checkAuthStatus() {
+    try {
+        const res = await fetch('/me', { credentials: 'include' });
+        if (res.ok) {
+            currentUser = await res.json();
+            isUserLoggedIn = !!currentUser.user;
+        } else {
+            isUserLoggedIn = false;
+            currentUser = null;
+        }
+    } catch (error) {
+        console.error('Fejl ved tjek af login status:', error);
+        isUserLoggedIn = false;
+        currentUser = null;
+    }
+}
+
+// Initialize auth check
+checkAuthStatus();
+
 $(document).ready(function () {
     const messageElement = document.getElementById('message');
     if (messageElement && messageElement.textContent.trim()) {
